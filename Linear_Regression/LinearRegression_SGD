@@ -13,7 +13,7 @@ theta_0_real, theta_1_real = np.zeros(2)
 data_size = 100
 iteration = 0
 cost = np.inf
-learning_rate = 0.1
+learning_rate = 0.001
 max_iterations = 100
 cost_memo = []
 
@@ -36,8 +36,8 @@ def h_func_real(theta_0, theta_1, x):
     return theta_0 + theta_1 * x
 
 
-def predict_price(sqft_living, theta_0_real, theta_1_real):
-    """Compute the predicted price using the real theta values"""
+def predict_price(sqft_living):
+    """Compute the predicted price using the real theta values."""
     predicted_price = h_func_real(theta_0_real, theta_1_real, sqft_living)
     return predicted_price
 
@@ -54,11 +54,12 @@ X = np.vstack((np.ones_like(training_set_X), training_set_X)).T
 
 # Initialize the plot
 fig, ax = plt.subplots()
+
 # Use real_training_set_X and real_training_set_Y
 ax.scatter(real_training_set_X, real_training_set_Y, c='black', label='Target')
 ax.set_xlabel('Living Area (ft²)')
 ax.set_ylabel('House Price ($)')
-ax.set_title('Linear Regression (Batch Gradient Descent)')
+ax.set_title('Linear Regression (Stochastic Gradient Descent)')
 line, = ax.plot(real_training_set_X, h_func_real(theta_0_real, theta_1_real, real_training_set_X),
                 'r-', label='Predict Line')  # Use h_func_real and real_training_set_X
 plt.legend()
@@ -67,18 +68,28 @@ plt.legend()
 def update(frame):
     """Update function for the animation"""
     global theta, cost, iteration, theta_0_real, theta_1_real
+
+    # Loop through the entire dataset for each epoch
+    for i in range(data_size):
+        X_sample = X[i]
+        y_sample = training_set_Y[i]
+
+        y_pred = h_func(theta, X_sample[1])
+        error = y_sample - y_pred
+        grad = X_sample * error
+        theta += learning_rate * grad
+
+        # Update theta values based on the real-scale data
+        theta_1_real = (Y_dev / X_dev) * theta[1]
+        theta_0_real = Y_mean - theta_1_real * X_mean
+
+        cost = error ** 2 / 2
     y_pred = h_func(theta, training_set_X)
     error = training_set_Y - y_pred
-    grad = np.dot(X.T, error)
-    theta += learning_rate * grad / data_size
-
-    # Update theta values based on the real-scale data
-    theta_1_real = (Y_dev / X_dev) * theta[1]
-    theta_0_real = Y_mean - theta_1_real * X_mean
-
     cost = np.sum(error ** 2) / (2 * data_size)
     cost_memo.append(cost)
     iteration += 1
+
     # Use h_func_real and real_training_set_X
     line.set_ydata(h_func_real(
         theta_0_real, theta_1_real, real_training_set_X))
@@ -91,7 +102,7 @@ ani = FuncAnimation(fig, update, frames=max_iterations,
 
 # Save the animation as a GIF
 # writer = PillowWriter(fps=20)
-# ani.save('Linear_Regression/Linear Regression of House Price.gif', writer=writer)
+# ani.save('Linear_Regression/Linear Regression of House Price (SGD).gif', writer=writer)
 
 # Display the animation
 plt.show()
@@ -109,6 +120,6 @@ plt.show()
 
 # Example usage: Predict the price of a house with 2000 sqft of living space
 sqft_living = 2000
-predicted_price = predict_price(sqft_living, theta_0_real, theta_1_real)
+predicted_price = predict_price(sqft_living)
 print(
     f"The predicted price for a house with {sqft_living} sqft of living space is: ${predicted_price:.2f}")
