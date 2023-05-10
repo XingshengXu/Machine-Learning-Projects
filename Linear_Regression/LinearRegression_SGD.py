@@ -1,7 +1,17 @@
+"""
+Stochastic Gradient Descent (SGD) for predicting house prices based on living area.
+
+This code implements a linear regression model using Stochastic Gradient Descent (SGD) 
+to predict the price of a house based on its living area (sqft_living). The model is trained 
+on a house price dataset loaded from a CSV file, and the real-scale theta values are computed 
+after normalizing the data. The training process is animated using `matplotlib`'s FuncAnimation 
+class, and the cost vs. iteration curve is plotted after training. The prediction for the price 
+of a house with 2000 sqft of living space is also computed as an example.
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import time
 from matplotlib.animation import FuncAnimation, PillowWriter
 
 # Load Data
@@ -100,7 +110,7 @@ def update(frame):
 ani = FuncAnimation(fig, update, frames=max_iterations,
                     interval=50, blit=True, repeat=False)
 
-# Save the animation as a GIF
+# *Save the animation as a GIF
 # writer = PillowWriter(fps=20)
 # ani.save('Linear_Regression/Linear Regression of House Price (SGD).gif', writer=writer)
 

@@ -1,5 +1,11 @@
+"""
+This program implements a linear regression model using Normal Equations to 
+predict house prices based on living area (in square feet).
+"""
+
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Load Data
 house_data = pd.read_csv('Linear_Regression/dataset/house_price.csv')
@@ -19,7 +25,7 @@ real_training_set_X = house_data['sqft_living'].head(data_size)
 real_training_set_Y = house_data['price'].head(data_size)
 
 # Design Matrix X as Inputs
-X = np.vstack((np.ones_like(real_training_set_X), real_training_set_X)).T
+X = np.column_stack((np.ones_like(real_training_set_X), real_training_set_X))
 
 # Target Value Vector
 Y = real_training_set_Y
@@ -30,9 +36,16 @@ theta = np.dot(np.dot(np.linalg.inv(np.dot(X.T, X)), X.T),
 theta_0, theta_1 = theta
 print(f"Theta values: theta_0 = {theta_0}, theta_1 = {theta_1}")
 
+# Predict price from real_training_set_X
+predicted_price = predict_price(real_training_set_X, theta_0, theta_1)
 
-# Example usage: Predict the price of a house with 2000 sqft of living space
-sqft_living = 2000
-predicted_price = predict_price(sqft_living, theta_0, theta_1)
-print(
-    f"The predicted price for a house with {sqft_living} sqft of living space is: ${predicted_price:.2f}")
+# Plot the generated dataset
+plt.scatter(real_training_set_X, real_training_set_Y,
+            c='black', marker='o', label='Target')
+plt.plot(real_training_set_X, predicted_price,
+         'r', label='Normal Equations Prediction')
+plt.xlabel('Living Area (ft²)')
+plt.ylabel('House Price ($)')
+plt.title('Linear Regression (Normal Equations)')
+plt.legend()
+plt.show()
