@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import confusion_matrix, roc_curve, precision_recall_curve, auc
+import seaborn as sns
 
 # Load Data
 market_data = pd.read_csv(
@@ -73,12 +75,53 @@ plt.ylabel('Cost')
 plt.title('Cost vs. Iteration')
 plt.show()
 
+# Convert probabilities into classes
+y_pred = h_func(theta, X).round()
 
-# Predict the purchased output by trained model
-X_test_raw = np.array([1, 49, 28000])
-X_test_std = scaler.transform(X_test_raw.reshape(1, -1))
-X_test = np.hstack([1, X_test_std[0]])
+# Create confusion matrix
+cm = confusion_matrix(training_set_Y, y_pred)
 
-Y_test = h_func(theta, X_test)
-print(
-    f'The customer will {"purchase" if Y_test.round() else "not purchase"} the product.')
+# Plot Confusion Matrix
+sns.heatmap(cm, annot=True, fmt='d')
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.show()
+
+# Calculate ROC curve
+fpr, tpr, _ = roc_curve(training_set_Y, h_func(theta, X))
+roc_auc = auc(fpr, tpr)
+
+# Plot ROC curve
+plt.plot(fpr, tpr, label=f'ROC curve (area = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic')
+plt.legend(loc="lower right")
+plt.show()
+
+# Calculate Precision-Recall curve
+precision, recall, _ = precision_recall_curve(
+    training_set_Y, h_func(theta, X))
+pr_auc = auc(recall, precision)
+
+# Plot Precision-Recall curve
+plt.plot(recall, precision, label=f'PR curve (area = {pr_auc:.2f})')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+plt.title('Precision-Recall curve')
+plt.legend(loc="lower right")
+plt.show()
+
+# Plot Predicted Probability Distribution
+plt.hist(h_func(theta, X), bins=10, label='Predicted probabilities')
+plt.title('Distribution of Predicted Probabilities')
+plt.xlabel('Probability')
+plt.ylabel('Frequency')
+plt.legend(loc="upper right")
+plt.show()
