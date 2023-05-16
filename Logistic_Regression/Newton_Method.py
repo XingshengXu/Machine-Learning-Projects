@@ -1,5 +1,5 @@
 """
-Logistic Regression for classificating marketing target.
+Logistic Regression using Newton's Method for classificating marketing target.
 """
 
 import matplotlib.pyplot as plt
@@ -19,7 +19,6 @@ data_size = len(market_data)
 iteration = 0
 cost = cost_diff = np.inf
 cost_prev = 0
-learning_rate = 0.01
 tolerence = 0.001
 max_iterations = 1000
 cost_memo = []
@@ -30,16 +29,23 @@ def h_func(theta, X):
     return 1 / (1 + np.exp(-theta.T @ X))
 
 
-def gradient(theta, X, Y):
-    """Gradient of the Cost Function"""
-    h = h_func(theta, X)
-    return X @ (Y - h)
-
-
 def cost_func(theta, X, Y):
     """Cost Function"""
     h = h_func(theta, X)
     return -1 * np.mean(Y * np.log(h) + (1 - Y) * np.log(1 - h))
+
+
+def gradient(theta, X, Y):
+    """Gradient of the Cost Function"""
+    h = h_func(theta, X)
+    return X @ (h - Y)
+
+
+def hessian(theta, X):
+    """Hessian Matrix"""
+    h = h_func(theta, X)
+    D = np.diag(h * (1 - h))
+    return X @ D @ X.T
 
 
 # Training Set
@@ -57,12 +63,13 @@ training_set_X = scaler.fit_transform(training_set_X)
 # Add A Column of Ones to The Training Set As Intercept Term
 X = np.hstack((np.ones((data_size, 1)), training_set_X)).T
 
-# Impletement Logistic Regression Training
+# Implement Logistic Regression Training
 
 # Loop through the entire dataset for each epoch
 while cost_diff >= tolerence and iteration <= max_iterations:
     grad = gradient(theta, X, training_set_Y)
-    theta += learning_rate * grad  # !Batch Gradient Descent update
+    H = hessian(theta, X)
+    theta -= np.linalg.inv(H) @ grad  # !Newton-Raphson update
     cost = cost_func(theta, X, training_set_Y)
     cost_diff = np.abs(cost_prev - cost)
     cost_memo.append(cost)
