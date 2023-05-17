@@ -5,9 +5,10 @@ Logistic Regression for classificating marketing target.
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix, roc_curve, precision_recall_curve, auc
-import seaborn as sns
+
 
 # Load Data
 market_data = pd.read_csv(
@@ -17,10 +18,10 @@ market_data = pd.read_csv(
 theta = np.zeros(4)
 data_size = len(market_data)
 iteration = 0
-cost = cost_diff = np.inf
-cost_prev = 0
+cost_prev = cost_diff = np.inf
+cost = 0
 learning_rate = 0.01
-tolerence = 0.001
+tolerance = 0.001
 max_iterations = 1000
 cost_memo = []
 
@@ -60,7 +61,7 @@ X = np.hstack((np.ones((data_size, 1)), training_set_X)).T
 # Impletement Logistic Regression Training
 
 # Loop through the entire dataset for each epoch
-while cost_diff >= tolerence and iteration <= max_iterations:
+while cost_diff >= tolerance and iteration <= max_iterations:
     grad = gradient(theta, X, training_set_Y)
     theta += learning_rate * grad  # !Batch Gradient Descent update
     cost = cost_func(theta, X, training_set_Y)

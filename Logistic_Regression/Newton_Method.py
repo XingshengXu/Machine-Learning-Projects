@@ -19,7 +19,7 @@ data_size = len(market_data)
 iteration = 0
 cost = cost_diff = np.inf
 cost_prev = 0
-tolerence = 0.001
+tolerance = 0.001
 max_iterations = 1000
 cost_memo = []
 
@@ -66,7 +66,7 @@ X = np.hstack((np.ones((data_size, 1)), training_set_X)).T
 # Implement Logistic Regression Training
 
 # Loop through the entire dataset for each epoch
-while cost_diff >= tolerence and iteration <= max_iterations:
+while cost_diff >= tolerance and iteration <= max_iterations:
     grad = gradient(theta, X, training_set_Y)
     H = hessian(theta, X)
     theta -= np.linalg.inv(H) @ grad  # !Newton-Raphson update
