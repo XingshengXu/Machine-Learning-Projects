@@ -34,11 +34,11 @@ except FileNotFoundError as e:
 threshold = 128  # grayscale to binary thresholding
 sigma = 0  # output thresholding
 image_size = 28
-learning_rate = 0.1
+learning_rate = 0.2
 max_iterations = 100
 train_set_size = len(train_set)
 test_set_size = len(test_set)
-theta = np.random.rand(image_size ** 2, 10)
+theta = np.random.randn(image_size ** 2, 10)
 
 # Initializations
 cost = 0
