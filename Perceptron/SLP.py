@@ -34,7 +34,7 @@ except FileNotFoundError as e:
 threshold = 128  # grayscale to binary thresholding
 sigma = 0  # output thresholding
 image_size = 28
-learning_rate = 0.2
+learning_rate = 0.1
 max_iterations = 100
 train_set_size = len(train_set)
 test_set_size = len(test_set)
@@ -64,8 +64,11 @@ while iteration <= max_iterations:
     error = Y_train - Y_pred
     grad = X_train @ error.T
     theta += learning_rate * grad
-    cost = np.sum(error ** 2) / (2 * train_set_size)
+
+    # Compute the Cross-Entropy Loss
+    cost = -np.sum(Y_train * np.log(Y_pred + 1e-8)) / train_set_size
     cost_memo.append(cost)
+
     iteration += 1
     print(f'{iteration} iterations')
 
