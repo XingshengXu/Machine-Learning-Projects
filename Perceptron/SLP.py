@@ -16,14 +16,19 @@ def grayscale_to_binary(image, threshold):
 
 
 # Load Training and Testing Data Sets
-train_set = idx2numpy.convert_from_file(
-    './Perceptron/dataset/train-images.idx3-ubyte')
-train_label = idx2numpy.convert_from_file(
-    './Perceptron/dataset/train-labels.idx1-ubyte')
-test_set = idx2numpy.convert_from_file(
-    './Perceptron/dataset/t10k-images.idx3-ubyte')
-test_label = idx2numpy.convert_from_file(
-    './Perceptron/dataset/t10k-labels.idx1-ubyte')
+try:
+    train_set = idx2numpy.convert_from_file(
+        './Perceptron/dataset/train-images.idx3-ubyte')
+    train_label = idx2numpy.convert_from_file(
+        './Perceptron/dataset/train-labels.idx1-ubyte')
+    test_set = idx2numpy.convert_from_file(
+        './Perceptron/dataset/t10k-images.idx3-ubyte')
+    test_label = idx2numpy.convert_from_file(
+        './Perceptron/dataset/t10k-labels.idx1-ubyte')
+except FileNotFoundError as e:
+    print("One or more data files not found.")
+    print(e)
+    exit()
 
 # Parameter Settings
 threshold = 128  # grayscale to binary thresholding
@@ -34,8 +39,6 @@ max_iterations = 100
 train_set_size = len(train_set)
 test_set_size = len(test_set)
 theta = np.random.rand(image_size ** 2, 10)
-X_train = np.zeros((image_size ** 2, train_set_size))
-X_test = np.zeros((image_size ** 2, test_set_size))
 
 # Initializations
 cost = 0
@@ -56,8 +59,8 @@ Y_train = np.eye(10)[train_label].T
 
 # Single Layer Perceptron Training
 while iteration <= max_iterations:
-    h_func = theta.T @ X_train
-    Y_pred = h_func >= sigma
+    net = theta.T @ X_train
+    Y_pred = net >= sigma
     error = Y_train - Y_pred
     grad = X_train @ error.T
     theta += learning_rate * grad
@@ -69,7 +72,7 @@ while iteration <= max_iterations:
 print(f"Training finished after {iteration} iterations.")
 print(f"Theta values:{theta}")
 
-# Plot Cost vs. Iteration
+# Plot Learning Curve
 plt.plot(range(1, iteration + 1), cost_memo)
 plt.xlabel('Iteration')
 plt.ylabel('Cost')
