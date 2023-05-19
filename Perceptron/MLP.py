@@ -36,10 +36,10 @@ except FileNotFoundError as e:
 
 # Parameter Settings
 image_size = 28
-learning_rate = 0.3
+learning_rate = 0.4
 alpha_momentum = 0.9
-hidden_node_number = 10
-max_iterations = 500
+hidden_node_number = 20
+max_iterations = 3000
 train_set_size = len(train_set)
 test_set_size = len(test_set)
 weights_hidden = np.random.randn(image_size ** 2, hidden_node_number)
