@@ -1,3 +1,14 @@
+"""
+Batch Gradient Descent (BGD) for predicting house prices based on living area.
+
+This code implements a linear regression model using Batch Gradient Descent (BGD) 
+to predict the price of a house based on its living area (sqft_living). The model is trained 
+on a house price dataset loaded from a CSV file, and the real-scale theta values are computed 
+after normalizing the data. The training process is animated using `matplotlib`'s FuncAnimation 
+class, and the cost vs. iteration curve is plotted after training. The prediction for the price 
+of a house with 2000 sqft of living space is also computed as an example.
+"""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
