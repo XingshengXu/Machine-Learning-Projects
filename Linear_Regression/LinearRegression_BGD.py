@@ -64,13 +64,13 @@ X = np.vstack((np.ones_like(training_set_X), training_set_X)).T
 
 # Initialize the plot
 fig, ax = plt.subplots()
-# Use real_training_set_X and real_training_set_Y
+
 ax.scatter(real_training_set_X, real_training_set_Y, c='black', label='Target')
 ax.set_xlabel('Living Area (ft²)')
 ax.set_ylabel('House Price ($)')
 ax.set_title('Linear Regression (Batch Gradient Descent)')
 line, = ax.plot(real_training_set_X, h_func_real(theta_0_real, theta_1_real, real_training_set_X),
-                'r-', label='Predict Line')  # Use h_func_real and real_training_set_X
+                'r-', label='Predict Line')
 plt.legend()
 
 
@@ -89,7 +89,7 @@ def update(frame):
     cost = np.sum(error ** 2) / (2 * data_size)
     cost_memo.append(cost)
     iteration += 1
-    # Use h_func_real and real_training_set_X
+
     line.set_ydata(h_func_real(
         theta_0_real, theta_1_real, real_training_set_X))
     return line,
