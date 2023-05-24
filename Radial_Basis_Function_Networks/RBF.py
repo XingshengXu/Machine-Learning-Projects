@@ -1,5 +1,5 @@
 """
-Multi Layer Perceptron Classifier for Handwritten Digit Recognition
+Radial Basis Function Networks for Handwritten Digit Recognition
 """
 
 import idx2numpy
@@ -9,14 +9,15 @@ import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
 
 
-def sigmoid(x):
-    """Sigmoid Function"""
-    return 1 / (1 + np.exp(-x))
+def softmax(x):
+    """Softmax Function"""
+    e_x = np.exp(x - np.max(x, axis=0))
+    return e_x / e_x.sum(axis=0)
 
 
 def gaussian(x, center, sigma):
     """Gaussian Radial Basis Function"""
-    return np.exp(-0.5 * ((x - center) / sigma) ** 2)
+    return np.exp(-0.5 * np.sum(((x - center) / sigma) ** 2, axis=0))
 
 
 # Load Training and Testing Data Sets
@@ -38,20 +39,20 @@ except FileNotFoundError as e:
 image_size = 28
 learning_rate = 0.4
 alpha_momentum = 0.9
-RBF_number = 20
-max_iterations = 100
-max_kmeans_iterations = 10
+cluster_number = 20
+max_iterations = 3000
+max_kmeans_iterations = 100
 train_set_size = len(train_set)
 test_set_size = len(test_set)
-weights_output = np.random.randn(RBF_number, 10)
+weights_output = np.random.randn(cluster_number, 10)
 weights_output_prev = np.zeros(weights_output.shape)
 
 # Initializations
 cost = 0
 cost_memo = []
 iteration = 0
-dist = np.zeros((RBF_number, train_set_size))
-std_devs = np.zeros(RBF_number)
+dist = np.zeros((cluster_number, train_set_size))
+std_devs = np.zeros(cluster_number)
 
 # Normalize Input Images
 train_images = train_set / 255
@@ -67,31 +68,107 @@ Y_train = np.eye(10)[train_label].T
 # K-means Clustering
 np.random.seed(42)
 cluster_centers = X_train[:, np.random.choice(
-    train_set_size, RBF_number, replace=False)]
+    train_set_size, cluster_number, replace=False)]
 
 for kmeans_iterations in range(max_kmeans_iterations):
     cluster_centers_prev = cluster_centers.copy()
 
-    # Assignment step: Assign each example to the closest center
-    for i in range(RBF_number):
+    # Assignment Step: Assign each example to the closest center
+    for i in range(cluster_number):
         dist[i, :] = np.linalg.norm(
             X_train - cluster_centers[:, i, np.newaxis], axis=0)
 
     class_id = np.argmin(dist, axis=0)
 
-    # Update step: Compute new centers as the mean of all examples assigned to each cluster
-    for i in range(RBF_number):
-        cluster_centers[:, i] = np.mean(X_train[:, class_id == i], axis=1)
+    # Update Step: Compute new centers as the mean of all examples assigned to each cluster
+    for i in range(cluster_number):
+        points_in_cluster = X_train[:, class_id == i]
 
-# Compute the standard deviation for each cluster
-for i in range(RBF_number):
-    # Only consider data points assigned to the current cluster
+        # Check If the Cluster Has Any Points
+        if points_in_cluster.size > 0:
+            cluster_centers[:, i] = np.mean(points_in_cluster, axis=1)
+        else:
+            # If No Points, Reinitialize the Center Randomly
+            cluster_centers[:, i] = X_train[:,
+                                            np.random.choice(train_set_size, 1)]
+    print(f'kmeans_iterations: {kmeans_iterations}')
+
+# Compute the Standard Deviation for Each Cluster
+for i in range(cluster_number):
     points_in_cluster = X_train[:, class_id == i]
 
-    # Compute the mean squared distance to the cluster center
-    squared_distances = np.linalg.norm(
-        points_in_cluster - cluster_centers[:, i, np.newaxis], axis=0) ** 2
-    mean_squared_distance = np.mean(squared_distances)
+    # Check If the Cluster Has Any Points
+    if points_in_cluster.size > 0:
+        # Compute the Mean Squared Distance to the Cluster Center
+        squared_distances = np.linalg.norm(
+            points_in_cluster - cluster_centers[:, i, np.newaxis], axis=0) ** 2
+        mean_squared_distance = np.mean(squared_distances)
 
-    # Compute the standard deviation
-    std_devs[i] = np.sqrt(mean_squared_distance)
+        # Compute the Standard Deviation for Each Cluster
+        std_devs[i] = np.sqrt(mean_squared_distance)
+    else:
+        # If No Points, Assign Some Default Value
+        std_devs[i] = 1.0
+
+# Compute the Cluster Nodes
+cluster_nodes = np.zeros((cluster_number, X_train.shape[1]))
+for i in range(cluster_number):
+    cluster_nodes[i, :] = gaussian(
+        X_train, cluster_centers[:, i, np.newaxis], std_devs[i])
+
+# Radial Basis Function Networks Training
+while iteration <= max_iterations:
+    net_output = weights_output.T @ cluster_nodes
+    Y_pred = softmax(net_output)
+
+    # Compute the Cross-Entropy Loss
+    cost = -np.sum(Y_train * np.log(Y_pred + 1e-8)) / train_set_size
+    cost_memo.append(cost)
+
+    # Backpropagation
+    delta_output = Y_train - Y_pred
+
+    # Update Output Weights
+    grad_output = cluster_nodes @ delta_output.T
+    weights_output_prev = alpha_momentum * weights_output_prev + \
+        learning_rate * grad_output / train_set_size
+    weights_output += weights_output_prev
+
+    iteration += 1
+    print(f'{iteration} iterations')
+
+print(f"Training finished after {iteration} iterations.")
+
+# Plot Learning Curve
+plt.plot(range(1, iteration + 1), cost_memo)
+plt.xlabel('Iteration')
+plt.ylabel('Cost')
+plt.title('Cost vs. Iteration')
+plt.show()
+
+# Multi Layer Perceptron Testing
+
+# Compute the Cluster Nodes in Test Set
+cluster_nodes_test = np.zeros((cluster_number, X_test.shape[1]))
+
+for i in range(cluster_number):
+    cluster_nodes_test[i, :] = gaussian(
+        X_test, cluster_centers[:, i, np.newaxis], std_devs[i])
+
+net_output_test = weights_output.T @ cluster_nodes_test
+Y_pred_test = softmax(net_output_test)
+
+# Convert the Predicted Outputs to Label Form
+Y_pred_test_label = np.argmax(Y_pred_test, axis=0)
+
+# Print Classification Report
+print(classification_report(test_label, Y_pred_test_label, zero_division=0))
+
+# Confusion Matrix
+cm = confusion_matrix(test_label, Y_pred_test_label)
+plt.figure(figsize=(10, 7))
+sns.heatmap(cm, annot=True, cmap='Blues')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()

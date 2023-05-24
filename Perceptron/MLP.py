@@ -15,6 +15,7 @@ def sigmoid(x):
 
 
 def softmax(x):
+    """Softmax Function"""
     e_x = np.exp(x - np.max(x, axis=0))
     return e_x / e_x.sum(axis=0)
 
@@ -38,7 +39,7 @@ except FileNotFoundError as e:
 image_size = 28
 learning_rate = 0.4
 alpha_momentum = 0.9
-hidden_node_number = 20
+hidden_node_number = 50
 max_iterations = 3000
 train_set_size = len(train_set)
 test_set_size = len(test_set)
@@ -103,7 +104,7 @@ plt.ylabel('Cost')
 plt.title('Cost vs. Iteration')
 plt.show()
 
-# Single Layer Perceptron Testing
+# Multi Layer Perceptron Testing
 net_hidden_test = weights_hidden.T @ X_test
 hidden_nodes_test = sigmoid(net_hidden_test)
 net_output_test = weights_output.T @ hidden_nodes_test
