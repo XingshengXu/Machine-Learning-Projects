@@ -11,7 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load Data
-house_data = pd.read_csv('Linear_Regression/dataset/house_price.csv')
+house_data = pd.read_csv('Linear Regression/dataset/house_price.csv')
 
 # Settings
 data_size = 100

@@ -15,7 +15,7 @@ import pandas as pd
 from matplotlib.animation import FuncAnimation, PillowWriter
 
 # Load Data
-house_data = pd.read_csv('Linear_Regression/dataset/house_price.csv')
+house_data = pd.read_csv('Linear Regression/dataset/house_price.csv')
 
 # Settings
 theta = np.zeros(2)

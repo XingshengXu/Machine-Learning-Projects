@@ -1,20 +1,21 @@
 """
-Logistic Regression using Newton's Method for classificating marketing target.
+Logistic Regression Using Newton's Method for Classificating Marketing Target.
 """
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import confusion_matrix, roc_curve, precision_recall_curve, auc
 import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve, precision_recall_curve, auc
+from matplotlib.colors import ListedColormap
 
 # Load Data
 market_data = pd.read_csv(
-    'Logistic_Regression/dataset/Social_Network_Ads.csv', header=0)
+    'Logistic Regression/dataset/Social_Network_Ads.csv', header=0)
 
 # Settings
-theta = np.zeros(4)
+theta = np.zeros(3)
 data_size = len(market_data)
 iteration = 0
 cost = cost_diff = np.inf
@@ -48,29 +49,34 @@ def hessian(theta, X):
     return X @ D @ X.T
 
 
+# Remove the First Column
+market_data = market_data.drop(market_data.columns[0], axis=1)
+
 # Training Set
-training_set_X = market_data.iloc[:, 1:4]
-training_set_Y = market_data.iloc[:, 4]
+training_set_X = market_data.iloc[0:300, 0:-1]
+training_set_Y = market_data.iloc[0:300:, -1]
 
-# Change 'Gender' Column as 'Male':1 and 'Female':0
-training_set_X['Gender'] = training_set_X['Gender'].replace(
-    {'Male': 1, 'Female': 0})
+# Test Set
+test_set_X = market_data.iloc[300:, 0:-1]
+test_set_Y = market_data.iloc[300:, -1]
 
-# Standardize the features
+# Standardize the Features
 scaler = StandardScaler()
 training_set_X = scaler.fit_transform(training_set_X)
+test_set_X = scaler.transform(test_set_X)
 
 # Add A Column of Ones to The Training Set As Intercept Term
-X = np.hstack((np.ones((data_size, 1)), training_set_X)).T
+training_set_X = np.hstack((np.ones((300, 1)), training_set_X)).T
+test_set_X = np.hstack((np.ones((100, 1)), test_set_X)).T
 
 # Implement Logistic Regression Training
 
-# Loop through the entire dataset for each epoch
+# Loop Through the Entire Dataset for Each Epoch
 while cost_diff >= tolerance and iteration <= max_iterations:
-    grad = gradient(theta, X, training_set_Y)
-    H = hessian(theta, X)
+    grad = gradient(theta, training_set_X, training_set_Y)
+    H = hessian(theta, training_set_X)
     theta -= np.linalg.inv(H) @ grad  # !Newton-Raphson update
-    cost = cost_func(theta, X, training_set_Y)
+    cost = cost_func(theta, training_set_X, training_set_Y)
     cost_diff = np.abs(cost_prev - cost)
     cost_memo.append(cost)
     cost_prev = cost
@@ -79,18 +85,40 @@ while cost_diff >= tolerance and iteration <= max_iterations:
 print(f"Training finished after {iteration} iterations.")
 print(f"Theta values:{theta}")
 
-# Plot cost vs. iteration
+# Create Grid
+x_values = np.linspace(-3, 3, 500)
+y_values = (-theta[0] - (theta[1]*x_values)) / theta[2]
+
+# Create a Colormap
+cmap = ListedColormap(['red', 'blue'])
+
+# Plotting the Data
+plt.scatter(training_set_X[1, :], training_set_X[2, :],
+            c=training_set_Y, cmap=cmap, edgecolors='k')
+plt.plot(x_values, y_values, label='Decision Boundary', c='green')
+plt.xlim([-3, 3])
+plt.ylim([-3, 3])
+plt.xlabel('Age')
+plt.ylabel('Estimated Salary')
+plt.title('Training Data with Decision Boundary')
+plt.legend()
+plt.show()
+
+# Plot Cost vs. Iteration
 plt.plot(range(1, iteration + 1), cost_memo)
 plt.xlabel('Iteration')
 plt.ylabel('Cost')
 plt.title('Cost vs. Iteration')
 plt.show()
 
-# Convert probabilities into classes
-y_pred = h_func(theta, X).round()
+# Convert Probabilities Into Classes
+y_pred = h_func(theta, test_set_X).round()
 
-# Create confusion matrix
-cm = confusion_matrix(training_set_Y, y_pred)
+# Print Classification Report
+print(classification_report(test_set_Y, y_pred, zero_division=0))
+
+# Create Confusion Matrix
+cm = confusion_matrix(test_set_Y, y_pred)
 
 # Plot Confusion Matrix
 sns.heatmap(cm, annot=True, fmt='d')
@@ -99,11 +127,11 @@ plt.xlabel('Predicted')
 plt.ylabel('Actual')
 plt.show()
 
-# Calculate ROC curve
-fpr, tpr, _ = roc_curve(training_set_Y, h_func(theta, X))
+# Calculate ROC Curve
+fpr, tpr, _ = roc_curve(test_set_Y, h_func(theta, test_set_X))
 roc_auc = auc(fpr, tpr)
 
-# Plot ROC curve
+# Plot ROC Curve
 plt.plot(fpr, tpr, label=f'ROC curve (area = {roc_auc:.2f})')
 plt.plot([0, 1], [0, 1], 'k--')
 plt.xlim([0.0, 1.0])
@@ -114,12 +142,12 @@ plt.title('Receiver Operating Characteristic')
 plt.legend(loc="lower right")
 plt.show()
 
-# Calculate Precision-Recall curve
+# Calculate Precision-Recall Curve
 precision, recall, _ = precision_recall_curve(
-    training_set_Y, h_func(theta, X))
+    test_set_Y, h_func(theta, test_set_X))
 pr_auc = auc(recall, precision)
 
-# Plot Precision-Recall curve
+# Plot Precision-Recall Curve
 plt.plot(recall, precision, label=f'PR curve (area = {pr_auc:.2f})')
 plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
@@ -130,7 +158,8 @@ plt.legend(loc="lower right")
 plt.show()
 
 # Plot Predicted Probability Distribution
-plt.hist(h_func(theta, X), bins=10, label='Predicted probabilities')
+plt.hist(h_func(theta, test_set_X), bins=10,
+         label='Predicted probabilities')
 plt.title('Distribution of Predicted Probabilities')
 plt.xlabel('Probability')
 plt.ylabel('Frequency')
