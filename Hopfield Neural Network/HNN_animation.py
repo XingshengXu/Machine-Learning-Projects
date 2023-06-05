@@ -1,8 +1,9 @@
-# Hopfield Neural Network for Pattern Association
+"""Hand Written Digits Image Noise Reduction Using Hopfield Network"""
+
 import idx2numpy
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.animation import FuncAnimation
+from matplotlib.animation import FuncAnimation, PillowWriter
 
 
 def sign_func(x):
@@ -32,7 +33,7 @@ def flipping_noise(image, flip_fraction):
     return np.where(noise_mask, -image, image)
 
 
-# Load training and testing data sets
+# Load training data sets
 try:
     train_set = idx2numpy.convert_from_file(
         'Hopfield Neural Network/dataset/train-images.idx3-ubyte')
@@ -45,8 +46,8 @@ except FileNotFoundError as e:
 
 # Parameters
 threshold = 128
-pattern_size = 2
-pattern_index = 1
+pattern_size = 3
+pattern_index = 2
 is_equal = False
 train_index = []
 
@@ -82,10 +83,15 @@ Y_test_curr = np.copy(Y_test_prev)
 sign_func_vec = np.vectorize(sign_func)
 
 # Create a figure for the animation
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(5, 5))
 
-# Initialize the neuron index
-i_neuron = 0
+# Adjust the size of the plot to remove whitespace
+plt.subplots_adjust(top=1, bottom=0, right=1, left=0,
+                    hspace=0, wspace=0)
+
+# Remove axes
+plt.gca().xaxis.set_major_locator(plt.NullLocator())
+plt.gca().yaxis.set_major_locator(plt.NullLocator())
 
 # The function to update the figure for each frame of the animation
 
@@ -101,15 +107,21 @@ def update(frame):
 
     # Plot the current state
     output_image = Y_test_curr.reshape(28, 28)
-    ax.imshow(output_image, cmap='gray')
+    img = ax.imshow(output_image, cmap='gray')
     ax.axis('off')
+    return img,
 
 
 # Determine the total number of frames (one per neuron update)
-n_frames = len(Y_test_curr) * 10  # For example, 10 full cycles
+total_frames = len(Y_test_curr)
 
 # Create the animation
-ani = FuncAnimation(fig, update, frames=range(
-    n_frames), interval=1, repeat=False)
+ani = FuncAnimation(fig, update, frames=total_frames,
+                    interval=1, blit=True, repeat=False)
 
+# Save the animation as a GIF
+writer = PillowWriter(fps=60)
+ani.save('Hopfield Neural Network/Image Noise Reduction (digit 2).gif', writer=writer)
+
+# Display the animation
 plt.show()
