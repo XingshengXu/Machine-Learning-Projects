@@ -1,16 +1,23 @@
 import cvxopt
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 from sklearn.datasets import make_blobs
+from sklearn.metrics import classification_report, confusion_matrix
 
 
 def generate_test_data(n_samples=100, n_features=2, std=0.5):
     '''Generate a test dataset with n-dimensional instances.'''
     X, y = make_blobs(n_samples=n_samples, n_features=n_features, centers=2,
                       random_state=0, cluster_std=std)
-    y[y == 0] = -1
-    y = np.float64(y)
+    y = convert_labels(y)
     return X, y
+
+
+def convert_labels(Y):
+    """Convert labels from {0,1} to {-1,1} and change the data type to float."""
+    Y[Y == 0] = -1
+    return Y.astype(np.float64)
 
 
 def create_contour_plot(svm, X, y, kernel='linear', filled=False):
@@ -43,6 +50,23 @@ def create_contour_plot(svm, X, y, kernel='linear', filled=False):
     plt.ylabel('Feature Two')
     plt.title(
         f'Support Vector Machine Classifier\nKernel: {kernel} C= {svm.C}')
+    plt.show()
+
+
+def predict_test(test_Y, pred_Y):
+    """This function prints the classification report and plots the confusion 
+    matrix for the given actual and predicted labels."""
+    # Print Classification Report
+    print(classification_report(test_Y, pred_Y, zero_division=0))
+
+    # Create Confusion Matrix
+    cm = confusion_matrix(test_Y, pred_Y)
+
+    # Plot Confusion Matrix
+    sns.heatmap(cm, annot=True, fmt='d')
+    plt.title('Confusion Matrix')
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
     plt.show()
 
 
