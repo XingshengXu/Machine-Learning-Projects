@@ -88,9 +88,6 @@ def create_3d_animation(svm, X, y):
     ani = animation.FuncAnimation(
         fig, update, frames=np.arange(0, 360, 15), interval=300, blit=False)
 
-    # Hide the axes
-    # ax.axis('off')
-
     # Save the animation
     ani.save('./SVM_3Ddemo.gif', writer='pillow')
     plt.show()
