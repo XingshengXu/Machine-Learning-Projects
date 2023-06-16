@@ -2,6 +2,7 @@ import cvxopt
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from matplotlib import animation
 from sklearn.datasets import make_blobs
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -50,6 +51,48 @@ def create_contour_plot(svm, X, y, kernel='linear', filled=False):
     plt.ylabel('Feature Two')
     plt.title(
         f'Support Vector Machine Classifier\nKernel: {kernel} C= {svm.C}')
+    plt.show()
+
+
+def create_3d_animation(svm, X, y):
+    """Animate the data and decision boundary by SVM in 3D."""
+
+    # Set up the figure and axis
+    fig = plt.figure(figsize=(10, 7))
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Scatter plot of data points
+    ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y, cmap='coolwarm')
+
+    # Get the range for each feature
+    x_min, x_max = X[:, 0].min(), X[:, 0].max()
+    y_min, y_max = X[:, 1].min(), X[:, 1].max()
+
+    # Create a grid of points within the range of each feature
+    X1, X2 = np.meshgrid(np.linspace(x_min, x_max, 50),
+                         np.linspace(y_min, y_max, 50))
+
+    # Calculate Z values (decision boundary) based on SVM model
+    Z = (-svm.b - svm.w[0]*X1 - svm.w[1]*X2) / svm.w[2]
+
+    # Plot the decision boundary surface
+    ax.plot_surface(X1, X2, Z, cmap='coolwarm', alpha=0.5)
+
+    # Define update function for animation
+    def update(degree):
+        # Update the elevation and azimuth of the viewpoint (camera)
+        ax.view_init(elev=20, azim=degree)
+        return ax
+
+    # Create an animation
+    ani = animation.FuncAnimation(
+        fig, update, frames=np.arange(0, 360, 15), interval=300, blit=False)
+
+    # Hide the axes
+    # ax.axis('off')
+
+    # Save the animation
+    ani.save('./SVM_3Ddemo.gif', writer='pillow')
     plt.show()
 
 
