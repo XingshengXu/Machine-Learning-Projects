@@ -134,10 +134,6 @@ class SupportVectorMachine():
             Default is 3. Ignored by kernels other than the 'polynomial' kernel.
 
     Attributes:
-        kernel (str): The kernel function used by the SVM.
-        C (float): The value of the `C` hyperparameter of the SVM.
-        gamma (float): The value of the `gamma` hyperparameter of the SVM.
-        degree (int): The value of the `degree` hyperparameter of the SVM.
         alphas (numpy.ndarray): An array storing all the Lagrange multipliers of the model.
         support_alphas (numpy.ndarray): An array storing the Lagrange multipliers for the support vectors.
         support_vectors (numpy.ndarray): An array storing the support vectors.
