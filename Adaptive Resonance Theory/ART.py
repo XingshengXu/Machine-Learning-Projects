@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from PIL import Image
+from scipy.signal import wiener
 from sklearn.datasets import make_blobs
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import MinMaxScaler
@@ -65,6 +67,71 @@ def create_contour_plot(art, X, y, resolution=1000, alpha=0.5):
     plt.title('Fuzzy Adaptive Resonance Theory Classifier')
 
     plt.show()
+
+
+def preprocess_image(image, block_shape):
+    # Convert the image to greyscale
+    img_grey = image.convert('L')
+
+    # Convert the image data to a numpy array and Normalize input image
+    train_image = np.asarray(img_grey) / 255
+
+    # Reshape the image into 4D space of designated size of blocks
+    image_blocks = train_image.reshape(train_image.shape[0] // block_shape[0], block_shape[0],
+                                       train_image.shape[1] // block_shape[1], block_shape[1])
+
+    # Combine and reshape each block into designated size of vectors
+    reshaped_blocks = image_blocks.transpose(
+        0, 2, 1, 3).reshape(-1, block_shape[0] * block_shape[1])
+
+    # Transpose to get the final input matrix
+    train_X = reshaped_blocks.T
+
+    # Complement coding
+    train_X = complement_coding(train_X)
+
+    # Generate Labels (y) only used to generate ART Class instance
+    train_Y = np.ones(train_X.shape[1], dtype='int')
+
+    return train_image, train_X, train_Y
+
+
+def decode_compressed_image(art, train_image, block_shape):
+    # Discompliment coding for blocks to form the Block Codes
+    trained_blocks = art.weights[:np.prod(block_shape), :]
+
+    # Compute the shape of the grid of blocks
+    grid_shape = (train_image.shape[0] // block_shape[0],
+                  train_image.shape[1] // block_shape[1])
+
+    # Reshape the Code Book into a 2D grid
+    cluster_id_grid = art.cluster_id.reshape(grid_shape)
+
+    # Initialize the compressed image
+    compressed_image = np.zeros(train_image.shape)
+
+    for i in range(grid_shape[0]):
+        for j in range(grid_shape[1]):
+            # Find the index for the current block
+            cluster_index = cluster_id_grid[i, j]
+
+            # Get the corresponding Block Code
+            code_block = trained_blocks[:, cluster_index]
+
+            # Reshape the Block Code to the original shape of a block
+            reshaped_block = code_block.reshape(block_shape)
+
+            # Place the decoded block in the correct position in the image
+            compressed_image[i * block_shape[0]:(i + 1) * block_shape[0],
+                             j * block_shape[1]:(j + 1) * block_shape[1]] = reshaped_block
+
+    # Denormalize the compressed image
+    compressed_image = compressed_image * 255
+
+    # Apply Wiener smoothing filter
+    compressed_image = wiener(compressed_image)
+
+    return compressed_image
 
 
 class AdaptiveResonanceTheory():
