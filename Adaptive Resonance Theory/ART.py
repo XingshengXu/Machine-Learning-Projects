@@ -1,15 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from PIL import Image
 from scipy.signal import wiener
 from sklearn.datasets import make_blobs
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
 
 
 def generate_test_data(n_samples=100, n_features=2, std=0.5):
-    '''Generate a test dataset with n-dimensional instances.'''
+    """Generate a test dataset with n-dimensional instances."""
 
     X, y = make_blobs(n_samples=n_samples, n_features=n_features, centers=2,
                       random_state=0, cluster_std=std)
@@ -38,7 +37,8 @@ def complement_coding(input_data):
 
 
 def create_contour_plot(art, X, y, resolution=1000, alpha=0.5):
-    '''Plot the decision boundary of the clusters formed by the ART model'''
+    """Plot the decision boundary of the clusters formed by the ART model"""
+
     # Generate a grid of points over the actual range of the training data
     x_min, y_min = X[:2, :].min(axis=1) - 0.1
     x_max, y_max = X[:2, :].max(axis=1) + 0.1
@@ -70,6 +70,8 @@ def create_contour_plot(art, X, y, resolution=1000, alpha=0.5):
 
 
 def preprocess_image(image, block_shape):
+    """Preprocesses the input image for compression."""
+
     # Convert the image to greyscale
     img_grey = image.convert('L')
 
@@ -96,13 +98,37 @@ def preprocess_image(image, block_shape):
     return train_image, train_X, train_Y
 
 
+def run_length_encoding(input_string):
+    """Performs run-length encoding on the input  code string."""
+    count = 1
+    prev = ""
+    code = []
+    for character in input_string:
+        if character != prev:
+            if prev:
+                entry = (prev, count)
+                code.append(entry)
+            count = 1
+            prev = character
+        else:
+            count += 1
+    entry = (prev, count)
+    code.append(entry)
+    return 2 * len(code)
+
+
 def decode_compressed_image(art, train_image, block_shape):
-    # Discompliment coding for blocks to form the Block Codes
+    """Decodes the compressed image using Code Book and Block Codes."""
+
+    # Discomplement coding for blocks to form the Block Codes
     trained_blocks = art.weights[:np.prod(block_shape), :]
 
     # Compute the shape of the grid of blocks
     grid_shape = (train_image.shape[0] // block_shape[0],
                   train_image.shape[1] // block_shape[1])
+
+    # Calculate the length of Code Book after RLE
+    length_after_RLE = run_length_encoding(art.cluster_id)
 
     # Reshape the Code Book into a 2D grid
     cluster_id_grid = art.cluster_id.reshape(grid_shape)
@@ -131,7 +157,66 @@ def decode_compressed_image(art, train_image, block_shape):
     # Apply Wiener smoothing filter
     compressed_image = wiener(compressed_image)
 
-    return compressed_image
+    return compressed_image, length_after_RLE, trained_blocks
+
+
+def create_image_plot(art, train_image, compressed_image, block_shape):
+    """Creates a plot showing the original image and the compressed image."""
+    # Plot original image and compressed image
+    plt.figure(figsize=(10, 5))
+
+    # Create the first subplot for the original image
+    plt.subplot(1, 2, 1)
+    plt.imshow(train_image, cmap='gray')
+    plt.title("Original Image")
+    plt.axis('off')
+
+    # Create the second subplot for the compressed image
+    plt.subplot(1, 2, 2)
+    plt.imshow(compressed_image, cmap='gray')
+    plt.title("Compressed Image")
+    plt.axis('off')
+
+    suptitle_text = (
+        f"Fuzzy Adaptive Resonance Theory Based Image Compression\n"
+        f"(block size: {block_shape[0]}x{block_shape[1]} "
+        f"learning rate: {art.learning_rate} vigilance parameter: {art.epsilon})"
+    )
+    plt.suptitle(suptitle_text)
+    plt.show()
+
+
+def evaluate_compression(train_image, compressed_image, length_after_RLE, trained_blocks):
+    """Evaluates the compression performance by calculating compression ratio, 
+    MSE, PSNR, and plotting the compression difference heatmap."""
+
+    # Calculate compression ratio
+    compression_ratio = np.prod(train_image.shape) / (
+        length_after_RLE + np.prod(trained_blocks.shape))
+
+    # Calculate MSE
+    mse = mean_squared_error(train_image, compressed_image)
+
+    # Calculate PSNR
+    psnr = 20 * np.log10(255.0 / np.sqrt(mse))
+
+    # Calculate difference
+    difference = np.abs(train_image - compressed_image)
+
+    # Plot heatmap of compression difference
+    plt.imshow(difference, cmap='binary', interpolation='nearest')
+    plt.axis('off')
+
+    # Add a colorbar to the right side
+    colorbar = plt.colorbar(orientation='vertical', pad=0.02)
+    colorbar.set_label('Difference')
+
+    title_text = f'Heatmap of compression difference\n' \
+        f'(Compression Ratio: {compression_ratio:.2f}, ' \
+        f'MSE: {mse:.2f}, ' \
+        f'PSNR: {psnr:.2f})'
+    plt.title(title_text)
+    plt.show()
 
 
 class AdaptiveResonanceTheory():
