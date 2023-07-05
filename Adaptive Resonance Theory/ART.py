@@ -15,10 +15,10 @@ def generate_test_data(n_samples=100, n_features=2, std=0.5):
 
     # Normalization of input data
     scaler = MinMaxScaler()
-    X = scaler.fit_transform(X).T
+    X = scaler.fit_transform(X)
 
     # Complement coding of input data to prevent the weight decreases too fast
-    X = np.vstack((X, 1.0 - X))
+    X = np.hstack((X, 1.0 - X))
     return X, y
 
 
@@ -33,15 +33,18 @@ def complement_coding(input_data):
     complement_data = 1.0 - input_data
 
     # Stack the original input matrix and its complement horizontally.
-    return np.vstack((input_data, complement_data))
+    return np.hstack((input_data, complement_data))
 
 
 def create_contour_plot(art, X, y, resolution=1000, alpha=0.5):
     """Plot the decision boundary of the clusters formed by the ART model"""
 
+    # We only use the first two dimensions of X for plotting.
+    X_plot = X[:, :2]
+
     # Generate a grid of points over the actual range of the training data
-    x_min, y_min = X[:2, :].min(axis=1) - 0.1
-    x_max, y_max = X[:2, :].max(axis=1) + 0.1
+    x_min, y_min = X_plot.min(axis=0) - 0.1
+    x_max, y_max = X_plot.max(axis=0) + 0.1
 
     x_values, y_values = np.meshgrid(np.linspace(x_min, x_max, resolution),
                                      np.linspace(y_min, y_max, resolution))
@@ -60,7 +63,7 @@ def create_contour_plot(art, X, y, resolution=1000, alpha=0.5):
     plt.contourf(x_values, y_values, pred_labels, alpha=alpha, cmap='bwr')
 
     # Plot the training data, color-coded based on their true label
-    plt.scatter(X[0, :], X[1, :], c=y, edgecolors='k', cmap='bwr')
+    plt.scatter(X_plot[:, 0], X_plot[:, 1], c=y, edgecolors='k', cmap='bwr')
 
     plt.xlabel('Feature One')
     plt.ylabel('Feature Two')
@@ -86,20 +89,18 @@ def preprocess_image(image, block_shape):
     reshaped_blocks = image_blocks.transpose(
         0, 2, 1, 3).reshape(-1, block_shape[0] * block_shape[1])
 
-    # Transpose to get the final input matrix
-    train_X = reshaped_blocks.T
-
     # Complement coding
-    train_X = complement_coding(train_X)
+    train_X = complement_coding(reshaped_blocks)
 
     # Generate Labels (y) only used to generate ART Class instance
-    train_Y = np.ones(train_X.shape[1], dtype='int')
+    train_Y = np.ones(train_X.shape[0], dtype='int')
 
     return train_image, train_X, train_Y
 
 
 def run_length_encoding(input_string):
     """Performs run-length encoding on the input  code string."""
+
     count = 1
     prev = ""
     code = []
@@ -162,6 +163,7 @@ def decode_compressed_image(art, train_image, block_shape):
 
 def create_image_plot(art, train_image, compressed_image, block_shape):
     """Creates a plot showing the original image and the compressed image."""
+
     # Plot original image and compressed image
     plt.figure(figsize=(10, 5))
 
@@ -257,59 +259,60 @@ class AdaptiveResonanceTheory():
 
     def choice_function(self, X_train):
         """Computes the choice function which ranks clusters in order of fitness to be selected."""
+
         #! T_j = Σ min(X_i, w_ji) / (α + Σ w_ji)
-        min_matrix = np.minimum(self.weights, X_train)
-        choice_score = min_matrix.sum(axis=0) / (self.alpha + self.weight_sum)
+        min_matrix = np.minimum(self.weights, X_train.T)
+        choice_score = min_matrix.sum(
+            axis=1) / (self.alpha + self.weights.sum(axis=1))
         return np.argsort(choice_score)[::-1]
 
     def vigilance_test(self, X_train, candidate_index):
         """Computes the vigilance test which verifies if the selected cluster matches 
         closely enough with the input vector."""
+
         #! S_j = Σ min(X_i, w_ji) / Σ X_i
 
-        min_matrix = np.minimum(self.weights[:, candidate_index], X_train)
+        min_matrix = np.minimum(self.weights[candidate_index, :], X_train)
         match_score = np.sum(min_matrix) / np.sum(X_train)
 
         if match_score >= self.epsilon:  # If match score meets the vigilance criterion
 
             #! Update weights of the neuron: w_ji_new = β * min(w_ji_old, X_i) + (1-β) * w_ji_old
-            self.weights[:, candidate_index] = self.learning_rate * min_matrix + (
-                1 - self.learning_rate) * self.weights[:, candidate_index]
-            self.weight_sum = self.weights.sum(axis=0)
+            self.weights[candidate_index, :] = self.learning_rate * min_matrix + (
+                1 - self.learning_rate) * self.weights[candidate_index, :]
             return True
         return False
 
     def count_valid_clusters(self):
         """Count the number of unique elements in cluster_id. This gives the number 
         of clusters that have at least one instance associated with them"""
+
         unique_clusters = np.unique(self.cluster_id)
         valid_cluster_count = len(unique_clusters)
         return valid_cluster_count
 
     def fit(self, X, y):
         """Fits the model using input vectors and corresponding labels.
-        Note, the input date shall have the form of (n_features, n_samples)."""
+        Note, the input data should have the form of (n_samples, n_features)."""
 
-        self.cluster_id = np.zeros(X.shape[1], dtype=np.int32)
-        self.weights = X[:, 0].reshape(-1, 1)
-        self.weight_sum = self.weights.sum(axis=0)
+        self.cluster_id = np.zeros(X.shape[0], dtype=np.int32)
+        self.weights = np.array([X[0, :]])
 
         while not self.IsEqual:
             cluster_id_prev = self.cluster_id.copy()
 
-            for i in range(X.shape[1]):
+            for i in range(X.shape[0]):
                 # Compute choice function
-                candidate_indices = self.choice_function(X[:, [i]])
+                candidate_indices = self.choice_function(X[i, :])
 
                 # Vigilance test
                 for candidate_index in candidate_indices:
-                    if self.vigilance_test(X[:, i], candidate_index):
+                    if self.vigilance_test(X[i, :], candidate_index):
                         self.cluster_id[i] = candidate_index
                         break
                 else:
-                    self.weights = np.column_stack((self.weights, X[:, i]))
-                    self.cluster_id[i] = self.weights.shape[1] - 1
-                    self.weight_sum = self.weights.sum(axis=0)
+                    self.weights = np.vstack((self.weights, X[i, :]))
+                    self.cluster_id[i] = self.weights.shape[0] - 1
 
             self.IsEqual = np.array_equal(cluster_id_prev, self.cluster_id)
             self.iteration += 1
@@ -321,28 +324,28 @@ class AdaptiveResonanceTheory():
 
         # Compute labels for each cluster
         self.cluster_labels = [np.argmax(np.bincount(y[self.cluster_id == id_value])) if np.any(
-            self.cluster_id == id_value) else None for id_value in range(self.weights.shape[1])]
+            self.cluster_id == id_value) else None for id_value in range(self.weights.shape[0])]
 
         # The model has been fitted
         self.IsFitted = True
 
     def predict(self, X):
-        '''Return the models predicted cluster for each of the given instances.'''
+        '''Return the model's predicted cluster for each of the given instances.'''
 
         if not self.IsFitted:
             raise ValueError(
                 "Model is not fitted, call 'fit' with appropriate arguments before using model.")
         else:
             predicted_labels = [self.predict_label(
-                test_data, self.cluster_labels) for test_data in X.T]
+                test_data, self.cluster_labels) for test_data in X]
         return predicted_labels
 
     def predict_label(self, X_test, cluster_labels):
         """Predicts the label of an instance by finding the cluster with the highest choice function value."""
 
-        X_test = X_test.reshape(-1, 1)
         min_matrix = np.minimum(self.weights, X_test)
-        choice_score = min_matrix.sum(axis=0) / (self.alpha + self.weight_sum)
+        choice_score = min_matrix.sum(
+            axis=1) / (self.alpha + self.weights.sum(axis=1))
 
         # Only consider clusters that have a label
         self.valid_indices = [i for i in range(
