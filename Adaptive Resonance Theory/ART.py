@@ -287,7 +287,8 @@ class AdaptiveResonanceTheory():
         return valid_cluster_count
 
     def fit(self, X, y):
-        """Fits the model using input vectors and corresponding labels."""
+        """Fits the model using input vectors and corresponding labels.
+        Note, the input date shall have the form of (n_features, n_samples)."""
 
         self.cluster_id = np.zeros(X.shape[1], dtype=np.int32)
         self.weights = X[:, 0].reshape(-1, 1)
