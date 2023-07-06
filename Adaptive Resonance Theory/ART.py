@@ -7,10 +7,10 @@ from sklearn.metrics import classification_report, confusion_matrix, mean_square
 from sklearn.preprocessing import MinMaxScaler
 
 
-def generate_test_data(n_samples=100, n_features=2, std=0.5):
+def generate_test_data(n_samples=100, n_features=2, centers=2, std=0.5):
     """Generate a test dataset with n-dimensional instances."""
 
-    X, y = make_blobs(n_samples=n_samples, n_features=n_features, centers=2,
+    X, y = make_blobs(n_samples=n_samples, n_features=n_features, centers=centers,
                       random_state=0, cluster_std=std)
 
     # Normalization of input data
@@ -60,10 +60,10 @@ def create_contour_plot(art, X, y, resolution=1000, alpha=0.5):
                 data_point, art.cluster_labels)
 
     plt.figure(figsize=(10, 7))
-    plt.contourf(x_values, y_values, pred_labels, alpha=alpha, cmap='bwr')
+    plt.contourf(x_values, y_values, pred_labels, alpha=alpha, cmap='jet')
 
     # Plot the training data, color-coded based on their true label
-    plt.scatter(X_plot[:, 0], X_plot[:, 1], c=y, edgecolors='k', cmap='bwr')
+    plt.scatter(X_plot[:, 0], X_plot[:, 1], c=y, edgecolors='k', cmap='jet')
 
     plt.xlabel('Feature One')
     plt.ylabel('Feature Two')
