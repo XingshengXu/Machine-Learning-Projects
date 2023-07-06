@@ -122,7 +122,7 @@ def decode_compressed_image(art, train_image, block_shape):
     """Decodes the compressed image using Code Book and Block Codes."""
 
     # Discomplement coding for blocks to form the Block Codes
-    trained_blocks = art.weights[:np.prod(block_shape), :]
+    trained_blocks = art.weights[:, :np.prod(block_shape)]
 
     # Compute the shape of the grid of blocks
     grid_shape = (train_image.shape[0] // block_shape[0],
@@ -143,7 +143,7 @@ def decode_compressed_image(art, train_image, block_shape):
             cluster_index = cluster_id_grid[i, j]
 
             # Get the corresponding Block Code
-            code_block = trained_blocks[:, cluster_index]
+            code_block = trained_blocks[cluster_index, :]
 
             # Reshape the Block Code to the original shape of a block
             reshaped_block = code_block.reshape(block_shape)
@@ -292,8 +292,8 @@ class AdaptiveResonanceTheory():
         return valid_cluster_count
 
     def fit(self, X, y):
-        """Fits the model using input vectors and corresponding labels.
-        Note, the input data should have the form of (n_samples, n_features)."""
+        """Fits the model using input matrix and corresponding labels.
+        Note, the input data matrix should have the shape of (n_samples, n_features)."""
 
         self.cluster_id = np.zeros(X.shape[0], dtype=np.int32)
         self.weights = np.array([X[0, :]])
