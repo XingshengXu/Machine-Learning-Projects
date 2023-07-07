@@ -56,7 +56,7 @@ def create_contour_plot(tree, X, y, resolution=500, alpha=0.5):
     plt.legend(title="Class Labels")
     plt.xlabel('Feature one')
     plt.ylabel('Feature two')
-    plt.title('Decision Boundary of A Classification Tree')
+    plt.title('Decision Boundaries Visualized by Classification Tree')
 
     plt.show()
 
