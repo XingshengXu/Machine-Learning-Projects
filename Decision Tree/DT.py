@@ -1,7 +1,65 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from matplotlib.colors import ListedColormap
 from sklearn.metrics import classification_report, confusion_matrix, mean_squared_error
+
+def evaluate_model(test_Y, pred_Y):
+    """This function prints the classification report and plots the confusion 
+    matrix for the given actual and predicted labels."""
+
+    # Print classification report
+    print(classification_report(test_Y, pred_Y, zero_division=0))
+
+    # Create confusion matrix
+    cm = confusion_matrix(test_Y, pred_Y)
+    sns.heatmap(cm, annot=True, fmt='d')
+    plt.title('Confusion Matrix')
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    plt.show()
+
+import matplotlib as mpl
+
+def create_contour_plot(tree, X, y, resolution=500, alpha=0.5):
+    """Create a contour plot for the decision boundaries of the trained Decision Tree."""
+    
+    # Define the axis boundaries of the plot and create a meshgrid
+    X_one_min, X_one_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+    X_two_min, X_two_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+    
+    # Calculate the decision boundary of the model.
+    X1, X2 = np.meshgrid(np.linspace(X_one_min, X_one_max, resolution),
+                        np.linspace(X_two_min, X_two_max, resolution))
+    X_plot = [[x1, x2] for x1, x2 in zip(X1.flatten(), X2.flatten())]
+
+    Y = np.array([tree.predict_class(np.array(x)) for x in X_plot])
+    Y = Y.reshape(X1.shape)
+
+    plt.figure(figsize=(10, 7))
+
+    # Define colormap
+    cmap = plt.get_cmap('plasma', len(np.unique(y)))
+
+    # Normalize data into [0.0, 1.0] range
+    norm = mpl.colors.Normalize(vmin=np.min(y), vmax=np.max(y))
+
+    # Plot the decision boundary
+    contour = plt.contourf(X1, X2, Y, alpha=alpha, cmap=cmap, norm=norm)
+
+    # Plot the training data for each class with a legend
+    for label in np.unique(y):
+        points = X[y == label]
+        color = cmap(norm(label))
+        plt.scatter(points[:, 0], points[:, 1], color=color, label=str(label), edgecolors='black')
+
+    plt.legend(title="Class Labels")
+    plt.xlabel('Feature one')
+    plt.ylabel('Feature two')
+    plt.title('Decision Boundary of A Classification Tree')
+
+    plt.show()
+
 
 
 class Node():
@@ -49,18 +107,21 @@ class Tree():
     def __init__(self, max_depth=np.inf, min_split_samples=2, min_leaf_samples=1):
         self.root = None
 
+        # Check if the arguments are valid
         if max_depth > 0:
             self.max_depth = max_depth
         else:
             raise AttributeError(
-                'Invalid max_depth value, max_depth must be greater than zero.')
+                'Invalid value, max_depth must be greater than zero.')
 
         if min_leaf_samples > 0 and min_split_samples >= 2 * min_leaf_samples:
             self.min_leaf_samples = min_leaf_samples
             self.min_split_samples = min_split_samples
         else:
             raise AttributeError(
-                'Invalid values: min_samples_leaf must be greater than zero, and min_samples_split must be no less than twice min_samples_leaf.')
+                'Invalid values: min_leaf_samples must be greater than zero, and'
+                'min_split_samples must be no less than twice min_leaf_samples.'
+            )
 
     def split(self, split_column, split_threshold, X, y):
         """Split the dataset based on the given feature and threshold value."""
@@ -118,21 +179,6 @@ class Tree():
         classes = self.__predict_probs(self.root, sample)
         return np.argmax(classes)
 
-    def predict_test(self, test_Y, pred_Y):
-        """This function prints the classification report and plots the confusion 
-        matrix for the given actual and predicted labels."""
-
-        # Print classification report
-        print(classification_report(test_Y, pred_Y, zero_division=0))
-
-        # Create confusion matrix
-        cm = confusion_matrix(test_Y, pred_Y)
-        sns.heatmap(cm, annot=True, fmt='d')
-        plt.title('Confusion Matrix')
-        plt.xlabel('Predicted')
-        plt.ylabel('Actual')
-        plt.show()
-
 
 class ClassificationTree(Tree):
     """ A Classification Tree is a type of Decision Tree that involves top-down, greedy, and the 
@@ -152,6 +198,7 @@ class ClassificationTree(Tree):
 
         super().__init__(max_depth, min_split_samples, min_leaf_samples)
         
+        # Check if the criterion is valid
         if criterion == 'gini' or criterion == 'entropy':
             self.criterion = criterion
         else:
@@ -257,11 +304,12 @@ class ClassificationTree(Tree):
         return best_left, best_right, best_split_point
 
     def __fit(self, subtree, curr_depth, X, y):
-        """Private method to recursively build the Classification Tree until all instances have been correctly classified 
-        or certain criteria have been satisfied."""
+        """Private method to recursively build the Classification Tree until all instances have been 
+        correctly classified or certain criteria have been satisfied."""
 
         class_frequency = np.bincount(y.astype(int))
 
+        # Base case for recursion: If any of the regulation criteria are met, return a leaf node
         is_gini_zero = (
             self.criterion == 'gini' and self.gini_impurity(y) == 0)
         is_entropy_zero = (
@@ -273,8 +321,12 @@ class ClassificationTree(Tree):
         ):
             return Node(None, class_frequency)
         else:
+            # Recursive case: If not a leaf node, compute the best split
             (best_left, best_right, best_split_point) = self.best_split(X, y)
-            if len(best_left) < self.min_leaf_samples or len(best_right) < self.min_leaf_samples:
+            
+            # Check if the split leads to leaf nodes with too few samples
+            if (len(best_left) < self.min_leaf_samples or 
+            len(best_right) < self.min_leaf_samples):
                 return Node(None, class_frequency)
             else:
                 subtree = Node(best_split_point, class_frequency)
