@@ -1,8 +1,9 @@
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from matplotlib.colors import ListedColormap
 from sklearn.metrics import classification_report, confusion_matrix, mean_squared_error
+
 
 def evaluate_model(test_Y, pred_Y):
     """This function prints the classification report and plots the confusion 
@@ -19,18 +20,17 @@ def evaluate_model(test_Y, pred_Y):
     plt.ylabel('Actual')
     plt.show()
 
-import matplotlib as mpl
 
 def create_contour_plot(tree, X, y, resolution=500, alpha=0.5):
     """Create a contour plot for the decision boundaries of the trained Decision Tree."""
-    
+
     # Define the axis boundaries of the plot and create a meshgrid
     X_one_min, X_one_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
     X_two_min, X_two_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
-    
+
     # Calculate the decision boundary of the model.
     X1, X2 = np.meshgrid(np.linspace(X_one_min, X_one_max, resolution),
-                        np.linspace(X_two_min, X_two_max, resolution))
+                         np.linspace(X_two_min, X_two_max, resolution))
     X_plot = [[x1, x2] for x1, x2 in zip(X1.flatten(), X2.flatten())]
 
     Y = np.array([tree.predict_class(np.array(x)) for x in X_plot])
@@ -51,7 +51,8 @@ def create_contour_plot(tree, X, y, resolution=500, alpha=0.5):
     for label in np.unique(y):
         points = X[y == label]
         color = cmap(norm(label))
-        plt.scatter(points[:, 0], points[:, 1], color=color, label=str(label), edgecolors='black')
+        plt.scatter(points[:, 0], points[:, 1], color=color,
+                    label=str(label), edgecolors='black')
 
     plt.legend(title="Class Labels")
     plt.xlabel('Feature one')
@@ -61,17 +62,16 @@ def create_contour_plot(tree, X, y, resolution=500, alpha=0.5):
     plt.show()
 
 
-
 class Node():
     """ Represents a single node in the Decision Tree.
-    
+
     Args:
         feature_threshold (tuple): Stores the feature index and threshold value used for
                                    the decision at the node. Format: (feature index, threshold).
         class_frequency (numpy.ndarray): Frequency of classes at this node.
         prediction (float): The predicted class for the samples at this node in the case of 
                             classification or the predicted target value in the case of regression.
-    
+
     Attributes:
         left (Node): The left child node of the current node.
         right (Node): The right child node of the current node.
@@ -99,7 +99,7 @@ class Tree():
         max_depth (int, optional): Maximum depth for the tree.
         min_split_samples (int, optional): Minimum number of samples required to split a node.
         min_leaf_samples (int, optional): Minimum number of samples required to be at a leaf node.
-        
+
     Attributes:
         root (Node): The root node of the Decision Tree.
     """
@@ -183,13 +183,13 @@ class Tree():
 class ClassificationTree(Tree):
     """ A Classification Tree is a type of Decision Tree that involves top-down, greedy, and the 
     recursive partitioning of the data space to create a tree-like model for classification tasks.
-    
+
     Args:
         criterion (str, optional): The metric to determine the efficiency of a split decision.
         max_depth (int, optional): Maximum depth for the tree.
         min_split_samples (int, optional): Minimum number of samples required to split a node.
         min_leaf_samples (int, optional): Minimum number of samples required to be at a leaf node.
-        
+
     Attributes:
         root (Node): The root node of Classification Tree.
     """
@@ -197,7 +197,7 @@ class ClassificationTree(Tree):
     def __init__(self, criterion='gini', max_depth=np.inf, min_split_samples=2, min_leaf_samples=1):
 
         super().__init__(max_depth, min_split_samples, min_leaf_samples)
-        
+
         # Check if the criterion is valid
         if criterion == 'gini' or criterion == 'entropy':
             self.criterion = criterion
@@ -285,6 +285,9 @@ class ClassificationTree(Tree):
         else:
             best_impurity = -1
 
+        # Initialize best left, right, and split_point as None
+        best_left, best_right, best_split_point = None, None, None
+
         # Evaluate the impurity of each possible split point
         for feature_index, split_point in zip(feature_indices, split_points):
             left, y_left, right, y_right = self.split(
@@ -323,10 +326,14 @@ class ClassificationTree(Tree):
         else:
             # Recursive case: If not a leaf node, compute the best split
             (best_left, best_right, best_split_point) = self.best_split(X, y)
-            
+
+            # If no valid split point is found, return a leaf node
+            if best_split_point is None:
+                return Node(None, class_frequency)
+
             # Check if the split leads to leaf nodes with too few samples
-            if (len(best_left) < self.min_leaf_samples or 
-            len(best_right) < self.min_leaf_samples):
+            if (len(best_left) < self.min_leaf_samples or
+                    len(best_right) < self.min_leaf_samples):
                 return Node(None, class_frequency)
             else:
                 subtree = Node(best_split_point, class_frequency)
