@@ -1,4 +1,11 @@
 # Machine-Learing-Projects
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/typio/typio/output/github-contribution-grid-snake-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/typio/typio/output/github-contribution-grid-snake.svg">
+  <img  alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/typio/typio/output/github-contribution-grid-snake.svg">
+</picture>
+
 The "Machine Learning Projects" repository is a collection of various projects that showcase the application of machine learning algorithms and techniques to real-world problems. Each project in the repository is designed to provide a hands-on experience for individuals looking to explore the field of machine learning. The projects cover a wide range of topics, from simple regression analysis to complex deep learning networks, providing a comprehensive overview of the field.
 
 The repository is organized in a way that makes it easy for users to understand the code and the methodology used. Each project includes detailed documentation explaining the problem statement, the data used, the algorithms applied, and the results obtained. Additionally, the code is well-commented and easy to follow, making it suitable for individuals at all levels of experience, from beginners to advanced users.
