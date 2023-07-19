@@ -49,7 +49,7 @@ class LocalWeightedLinearRegression:
     def plot(self, X, y, x_query, y_query):
         """Plot the generated dataset."""
 
-        plt.scatter(X, y, c='b', marker='o', label='Target')
+        plt.scatter(X, y, c='black', marker='o', label='Target')
         plt.plot(x_query, y_query, 'r', label='LWLR Prediction')
         plt.xlabel('Input Data')
         plt.ylabel('Predict Value')
