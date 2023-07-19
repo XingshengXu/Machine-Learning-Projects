@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class LocalWeightedLinearRegression:
+class NormalEquations:
     """
     LWLR is a non-parametric algorithm that fits the model to the data at prediction time, 
     using a weight matrix to give higher importance to data points near the point of interest.
@@ -15,8 +15,8 @@ class LocalWeightedLinearRegression:
         y (np.array): The target values.
     """
 
-    def __init__(self, tau):
-        self.tau = tau
+    def __init__(self):
+        self.theta = np.zeros(2)
         self.IsFitted = False
 
     def fit(self, X, y):
@@ -24,35 +24,32 @@ class LocalWeightedLinearRegression:
 
         self.X = np.column_stack((np.ones_like(X), X))
         self.Y = y
+
+        # Theta Found by Normal Functions to minimizes the mean squared error
+        # ! theta = (X.T*X)^-1*X.T*Y
+        self.theta = np.dot(np.dot(np.linalg.inv(
+            np.dot(self.X.T, self.X)), self.X.T), self.Y)
+        print(
+            f"Theta values: theta_0 = {self.theta[0]}, theta_1 = {self.theta[1]}")
         self.IsFitted = True
 
-    def predict(self, x_query):
+    def predict(self, X):
         """Compute the predicted value."""
 
         if not self.IsFitted:
             raise ValueError(
                 "Model is not fitted, call 'fit' with appropriate arguments before using model.")
         else:
-            y_query = np.zeros_like(x_query)
+            pred_y = self.theta[0] + self.theta[1] * X
+            return pred_y
 
-            for i, x_q in enumerate(x_query):
-                coord_distance = self.X[:, 1] - x_q
-                w = np.exp(-coord_distance**2 / (2 * self.tau**2))
-                w = np.diag(w)
-                # ! theta = (X.T*w*X)^-1*X.T*w*Y
-                theta = np.linalg.inv(
-                    self.X.T @ w @ self.X) @ self.X.T @ w @ self.Y
-                y_query[i] = x_q * theta[1] + theta[0]
-
-            return y_query
-
-    def plot(self, X, y, x_query, y_query):
+    def plot(self, X, y, pred_y):
         """Plot the generated dataset."""
 
-        plt.scatter(X, y, c='b', marker='o', label='Target')
-        plt.plot(x_query, y_query, 'r', label='LWLR Prediction')
+        plt.scatter(X, y, c='black', marker='o', label='Target')
+        plt.plot(X, pred_y, 'r', label='Normal Equations Prediction')
         plt.xlabel('Input Data')
         plt.ylabel('Predict Value')
-        plt.title('Local Weighted Linear Regression')
+        plt.title('Linear Regression (Normal Equations)')
         plt.legend()
         plt.show()
