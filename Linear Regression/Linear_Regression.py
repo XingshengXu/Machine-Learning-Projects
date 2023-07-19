@@ -53,7 +53,7 @@ class LinearRegression:
         return self.theta_real[0] + self.theta_real[1] * X
 
     def predict_value(self, X):
-        """Compute the predicted price using the real theta values."""
+        """Compute the predicted value using the real theta values."""
 
         if not self.IsFitted:
             raise ValueError(
