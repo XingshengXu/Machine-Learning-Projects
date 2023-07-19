@@ -1,0 +1,58 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+class LocalWeightedLinearRegression:
+    """
+    LWLR is a non-parametric algorithm that fits the model to the data at prediction time, 
+    using a weight matrix to give higher importance to data points near the point of interest.
+
+    Args:
+        tau (float): The bandwidth parameter which determines the range of influence of the data points.
+
+    Attributes:
+        X (np.array): The input training dataset.
+        y (np.array): The target values.
+    """
+
+    def __init__(self, tau):
+        self.tau = tau
+        self.IsFitted = False
+
+    def fit(self, X, y):
+        """Train the model with the given training set."""
+
+        self.X = np.column_stack((np.ones_like(X), X))
+        self.Y = y
+        self.IsFitted = True
+
+    def predict(self, x_query):
+        """Compute the predicted value."""
+
+        if not self.IsFitted:
+            raise ValueError(
+                "Model is not fitted, call 'fit' with appropriate arguments before using model.")
+        else:
+            y_query = np.zeros_like(x_query)
+
+            for i, x_q in enumerate(x_query):
+                coord_distance = self.X[:, 1] - x_q
+                w = np.exp(-coord_distance**2 / (2 * self.tau**2))
+                w = np.diag(w)
+                # ! theta = (X.T*w*X)^-1*X.T*w*Y
+                theta = np.linalg.inv(
+                    self.X.T @ w @ self.X) @ self.X.T @ w @ self.Y
+                y_query[i] = x_q * theta[1] + theta[0]
+
+            return y_query
+
+    def plot(self, X, y, x_query, y_query):
+        """Plot the generated dataset."""
+
+        plt.scatter(X, y, c='b', marker='o', label='Target')
+        plt.plot(x_query, y_query, 'r', label='LWLR Prediction')
+        plt.xlabel('Living Area (ft²)')
+        plt.ylabel('House Price ($)')
+        plt.title('Local Weighted Linear Regression')
+        plt.legend()
+        plt.show()
