@@ -17,7 +17,7 @@ def evaluate_model(model, test_y, pred_y):
 
 
 def plot_cost_vs_iteration(model):
-    """Plot cost vs. iteration"""
+    """Plot cost vs. iteration."""
 
     plt.figure()
     plt.plot(range(1, model.iteration + 1), model.cost_memo)

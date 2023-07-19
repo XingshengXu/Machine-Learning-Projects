@@ -35,7 +35,7 @@ class LinearRegression:
         self.IsFitted = False
 
     def normalize(self, data):
-        """Normalization Function"""
+        """Normalization Function."""
 
         mean = np.mean(data, axis=0)
         std_dev = np.std(data, axis=0)
@@ -43,17 +43,17 @@ class LinearRegression:
         return normalized_data, mean, std_dev
 
     def h_func(self, X):
-        """Hypothesis Function"""
+        """Hypothesis Function."""
 
         return np.dot(X, self.theta)
 
     def h_func_real(self, X):
-        """Hypothesis Function for real-scale data"""
+        """Hypothesis Function for real-scale data."""
 
         return self.theta_real[0] + self.theta_real[1] * X
 
     def predict_value(self, X):
-        """Compute the predicted price using the real theta values"""
+        """Compute the predicted price using the real theta values."""
 
         if not self.IsFitted:
             raise ValueError(
@@ -63,7 +63,7 @@ class LinearRegression:
             return pred_Y
 
     def initialize_plot(self, X, y):
-        """Initialize plot for animation"""
+        """Initialize plot for animation."""
 
         self.fig, self.ax = plt.subplots()
         self.ax.scatter(X, y, c='black', label='Target')
@@ -74,7 +74,7 @@ class LinearRegression:
         plt.legend()
 
     def update_BGD(self, frame):
-        """Update function for BGD"""
+        """Update function for BGD."""
 
         y_pred = self.h_func(self.normalized_X)
         error = self.normalized_y - y_pred
@@ -93,7 +93,7 @@ class LinearRegression:
         return self.line,
 
     def update_SGD(self, frame):
-        """Update function for SGD"""
+        """Update function for SGD."""
 
         # Shuffle the data at each iteration
         indices = np.arange(self.X.shape[0])
@@ -126,7 +126,7 @@ class LinearRegression:
         return self.line,
 
     def fit(self, X, y):
-        """Train the model with the given training set"""
+        """Train the model with the given training set."""
 
         self.X = X
         self.normalized_X, self.X_mean, self.X_dev = self.normalize(X)
