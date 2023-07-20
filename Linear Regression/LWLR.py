@@ -26,7 +26,7 @@ class LocalWeightedLinearRegression:
         self.Y = y
         self.IsFitted = True
 
-    def predict(self, x_query):
+    def predict_value(self, x_query):
         """Compute the predicted value."""
 
         if not self.IsFitted:
@@ -46,8 +46,8 @@ class LocalWeightedLinearRegression:
 
             return y_query
 
-    def plot(self, X, y, x_query, y_query):
-        """Plot the generated dataset."""
+    def create_regression_plot(self, X, y, x_query, y_query):
+        """Create a plot to visualize the LWLR predictions."""
 
         plt.scatter(X, y, c='black', marker='o', label='Target')
         plt.plot(x_query, y_query, 'r', label='LWLR Prediction')

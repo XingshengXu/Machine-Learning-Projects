@@ -1,11 +1,9 @@
 import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.animation import PillowWriter
 from sklearn.metrics import r2_score
 
 
 def evaluate_model(model, test_y, pred_y):
-    """Evaluates the performance of a model and prints the R-squared score."""
+    """Evaluate the performance of a model and prints the R-squared score."""
 
     # Calculate R-squared
     r2 = r2_score(test_y, pred_y)

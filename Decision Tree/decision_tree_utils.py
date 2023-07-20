@@ -8,7 +8,7 @@ from decisiontree import ClassificationTree, RegressionTree
 
 
 def evaluate_model(test_y, pred_y, model_type):
-    """Evaluates the performance of a model and prints the appropriate performance metrics 
+    """Evaluate the performance of a model and prints the appropriate performance metrics 
     based on the type of the model. For classification models, it prints the classification 
     report and plots the confusion matrix. For regression models, it calculates and prints 
     the R-squared score."""

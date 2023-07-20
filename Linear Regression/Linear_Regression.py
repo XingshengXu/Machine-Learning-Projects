@@ -59,8 +59,8 @@ class LinearRegression:
             raise ValueError(
                 "Model is not fitted, call 'fit' with appropriate arguments before using model.")
         else:
-            pred_Y = self.h_func_real(X)
-            return pred_Y
+            pred_y = self.h_func_real(X)
+            return pred_y
 
     def initialize_plot(self, X, y):
         """Initialize plot for animation."""
@@ -76,8 +76,8 @@ class LinearRegression:
     def update_BGD(self, frame):
         """Update function for BGD."""
 
-        y_pred = self.h_func(self.normalized_X)
-        error = self.normalized_y - y_pred
+        pred_y = self.h_func(self.normalized_X)
+        error = self.normalized_y - pred_y
         grad = np.dot(self.normalized_X.T, error)
         self.theta += self.learning_rate * grad / self.X.shape[0]
 

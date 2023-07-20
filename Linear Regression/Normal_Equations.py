@@ -33,7 +33,7 @@ class NormalEquations:
             f"Theta values: theta_0 = {self.theta[0]}, theta_1 = {self.theta[1]}")
         self.IsFitted = True
 
-    def predict(self, X):
+    def predict_value(self, X):
         """Compute the predicted value."""
 
         if not self.IsFitted:
@@ -43,8 +43,8 @@ class NormalEquations:
             pred_y = self.theta[0] + self.theta[1] * X
             return pred_y
 
-    def plot(self, X, y, pred_y):
-        """Plot the generated dataset."""
+    def create_regression_plot(self, X, y, pred_y):
+        """Create a plot to visualize the Normal Equations predictions."""
 
         plt.scatter(X, y, c='black', marker='o', label='Target')
         plt.plot(X, pred_y, 'r', label='Normal Equations Prediction')

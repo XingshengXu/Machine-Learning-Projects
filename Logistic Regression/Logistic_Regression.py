@@ -1,159 +1,143 @@
-"""
-Logistic Regression for Classificating Marketing Target
-"""
-
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import seaborn as sns
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import classification_report, confusion_matrix, roc_curve, precision_recall_curve, auc
 from matplotlib.colors import ListedColormap
 
-# Load Data
-market_data = pd.read_csv(
-    'Logistic Regression/dataset/Social_Network_Ads.csv', header=0)
 
-# Settings
-theta = np.zeros(3)
-iteration = 0
-cost_prev = cost_diff = np.inf
-cost = 0
-learning_rate = 0.01
-tolerance = 0.001
-max_iterations = 1000
-cost_memo = []
+class LogisticRegression:
+    """
+    Logistic Regression using either Batch Gradient Descent (BGD) or Newton-Raphson Method (NM).
+    This algorithm is used for binary classification, where a logistic model is trained to predict class labels
+    by iteratively adjusting its parameters based on the entire dataset to minimize the cost function.
+    This cost function measures the difference between the predicted class probabilities and the actual class labels.
 
+    Args:
+        algorithm (str): 'BGD' for Batch Gradient Descent, 'NM' for Newton-Raphson Method
+        learning_rate (float, optional): Learning rate for Gradient Descent.
+        max_iterations (int, optional): Maximum number of iterations for the optimization loop.
 
-def h_func(theta, X):
-    """Hypothesis Function"""
-    return 1 / (1 + np.exp(-theta.T @ X))
+    Attributes:
+        theta (np.array): Model weights.
+        iteration (int): Counter for iterations.
+        cost (float): Current cost value.
+        cost_memo (list): Memory of cost at each iteration.
+    """
 
+    def __init__(self, algorithm='BGD', learning_rate=0.01, max_iterations=1000):
+        self.algorithm = algorithm
+        self.learning_rate = learning_rate
+        self.max_iterations = max_iterations
+        self.tolerance = 0.001
+        self.theta = np.zeros(3)
+        self.iteration = 0
+        self.cost = 0
+        self.cost_prev = self.cost_diff = np.inf
+        self.cost_memo = []
+        self.IsFitted = False
 
-def gradient(theta, X, Y):
-    """Gradient of the Cost Function"""
-    h = h_func(theta, X)
-    return X @ (Y - h)
+    def h_func(self, X):
+        """Build hypothesis function."""
 
+        return 1 / (1 + np.exp(-self.theta.T @ X))
 
-def cost_func(theta, X, Y):
-    """Cost Function"""
-    h = h_func(theta, X)
-    return -1 * np.mean(Y * np.log(h) + (1 - Y) * np.log(1 - h))
+    def gradient(self, X, y):
+        """Gradient of the cost function."""
 
+        h = self.h_func(X)
+        return X @ (y - h)
 
-# Remove the First Column
-market_data = market_data.drop(market_data.columns[0], axis=1)
+    def cost_func(self, X, y):
+        """Build cost function."""
 
-# Training Set
-training_set_X = market_data.iloc[0:300, 0:-1]
-training_set_Y = market_data.iloc[0:300:, -1]
+        h = self.h_func(X)
+        return -1 * np.mean(y * np.log(h) + (1 - y) * np.log(1 - h))
 
-# Test Set
-test_set_X = market_data.iloc[300:, 0:-1]
-test_set_Y = market_data.iloc[300:, -1]
+    def hessian(self, X):
+        """Build Hessian matrix."""
 
-# Standardize the Features
-scaler = StandardScaler()
-training_set_X = scaler.fit_transform(training_set_X)
-test_set_X = scaler.transform(test_set_X)
+        h = self.h_func(X)
+        D = np.diag(h * (1 - h))
+        return X @ D @ X.T
 
-# Add A Column of Ones to The Training Set As Intercept Term
-training_set_X = np.hstack((np.ones((300, 1)), training_set_X)).T
-test_set_X = np.hstack((np.ones((100, 1)), test_set_X)).T
+    def fit(self, X, y):
+        """Train the model with the given training set."""
 
-# Impletement Logistic Regression Training
+        self.X = X
+        self.y = y
 
-# Loop Through the Entire Dataset for Each Epoch
-while cost_diff >= tolerance and iteration <= max_iterations:
-    grad = gradient(theta, training_set_X, training_set_Y)
-    theta += learning_rate * grad  # !Batch Gradient Descent update
-    cost = cost_func(theta, training_set_X, training_set_Y)
-    cost_diff = np.abs(cost_prev - cost)
-    cost_memo.append(cost)
-    cost_prev = cost
-    iteration += 1
+        # Standardize the features
+        self.scaler = StandardScaler()
+        self.X = self.scaler.fit_transform(self.X)
 
-print(f"Training finished after {iteration} iterations.")
-print(f"Theta values:{theta}")
+        # Add a column of ones to training set as intercept term
+        self.X = np.hstack((np.ones((self.X.shape[0], 1)), self.X)).T
 
-# Create Grid
-x_values = np.linspace(-3, 3, 500)
-y_values = (-theta[0] - (theta[1]*x_values)) / theta[2]
+        # Implement logistic regression training
+        while self.cost_diff >= self.tolerance and self.iteration <= self.max_iterations:
+            grad = self.gradient(self.X, self.y)
 
-# Create a Colormap
-cmap = ListedColormap(['red', 'blue'])
+            if self.algorithm == 'NM':
+                H = self.hessian(self.X)
+                self.theta += np.linalg.inv(H) @ grad  # !Newton-Raphson update
+            elif self.algorithm == 'BGD':
+                self.theta += self.learning_rate * grad  # !Batch Gradient Descent update
+            else:
+                raise ValueError(
+                    'Invalid algorithm type. Choose "BGD" or "NM".')
 
-# Plotting the Data
-plt.scatter(training_set_X[1, :], training_set_X[2, :],
-            c=training_set_Y, cmap=cmap, edgecolors='k')
-plt.plot(x_values, y_values, label='Decision Boundary', c='green')
-plt.xlim([-3, 3])
-plt.ylim([-3, 3])
-plt.xlabel('Age')
-plt.ylabel('Estimated Salary')
-plt.title('Training Data with Decision Boundary')
-plt.legend()
-plt.show()
+            self.cost = self.cost_func(self.X, self.y)
+            self.cost_diff = np.abs(self.cost_prev - self.cost)
+            self.cost_memo.append(self.cost)
+            self.cost_prev = self.cost
+            self.iteration += 1
 
-# Plot Cost vs. Iteration
-plt.plot(range(1, iteration + 1), cost_memo)
-plt.xlabel('Iteration')
-plt.ylabel('Cost')
-plt.title('Cost vs. Iteration')
-plt.show()
+        print(f"Training finished after {self.iteration} iterations.")
+        print(f"Theta values:{self.theta}")
 
-# Convert Probabilities Into Classes
-y_pred = h_func(theta, test_set_X).round()
+        self.IsFitted = True
 
-# Print Classification Report
-print(classification_report(test_set_Y, y_pred, zero_division=0))
+    def predict_class(self, X):
+        """Convert probabilities into classes."""
 
-# Create Confusion Matrix
-cm = confusion_matrix(test_set_Y, y_pred)
+        if not self.IsFitted:
+            raise ValueError(
+                "Model is not fitted, call 'fit' with appropriate arguments before using model.")
+        else:
+            # Standardize the features
+            X = self.scaler.transform(X)
 
-# Plot Confusion Matrix
-sns.heatmap(cm, annot=True, fmt='d')
-plt.title('Confusion Matrix')
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
-plt.show()
+            # Add a column of ones to training set as intercept term
+            X = np.hstack((np.ones((X.shape[0], 1)), X)).T
 
-# Calculate ROC Curve
-fpr, tpr, _ = roc_curve(test_set_Y, h_func(theta, test_set_X))
-roc_auc = auc(fpr, tpr)
+            # Predict the class using hypothesis function
+            pred_y = self.h_func(X).round()
 
-# Plot ROC Curve
-plt.plot(fpr, tpr, label=f'ROC curve (area = {roc_auc:.2f})')
-plt.plot([0, 1], [0, 1], 'k--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver Operating Characteristic')
-plt.legend(loc="lower right")
-plt.show()
+            return pred_y
 
-# Calculate Precision-Recall curve
-precision, recall, _ = precision_recall_curve(
-    test_set_Y, h_func(theta, test_set_X))
-pr_auc = auc(recall, precision)
+    def create_contour_plot(self, X, y):
+        """Create a contour plot for the decision boundary of Logistic Regression."""
 
-# Plot Precision-Recall curve
-plt.plot(recall, precision, label=f'PR curve (area = {pr_auc:.2f})')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('Recall')
-plt.ylabel('Precision')
-plt.title('Precision-Recall curve')
-plt.legend(loc="lower right")
-plt.show()
+        # Standardize the features
+        X = self.scaler.transform(X)
 
-# Plot Predicted Probability Distribution
-plt.hist(h_func(theta, test_set_X), bins=10,
-         label='Predicted probabilities')
-plt.title('Distribution of Predicted Probabilities')
-plt.xlabel('Probability')
-plt.ylabel('Frequency')
-plt.legend(loc="upper right")
-plt.show()
+        # Add a column of ones to training set as intercept term
+        X = np.hstack((np.ones((X.shape[0], 1)), X)).T
+
+        # Create Grid
+        x_values = np.linspace(-3, 3, 500)
+        y_values = (-self.theta[0] - (self.theta[1]
+                    * x_values)) / self.theta[2]
+
+        # Create a Colormap
+        cmap = ListedColormap(['red', 'blue'])
+
+        # Plotting the Data
+        plt.scatter(X[1, :], X[2, :], c=y, cmap=cmap, edgecolors='k')
+        plt.plot(x_values, y_values, label='Decision Boundary', c='green')
+        plt.xlim([-3, 3])
+        plt.ylim([-3, 3])
+        plt.xlabel('Feature 1')
+        plt.ylabel('Feature 2')
+        plt.title('Training Data with Decision Boundary')
+        plt.legend()
+        plt.show()
