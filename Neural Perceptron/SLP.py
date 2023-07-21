@@ -18,13 +18,13 @@ def grayscale_to_binary(image, threshold):
 # Load Training and Testing Data Sets
 try:
     train_set = idx2numpy.convert_from_file(
-        './Perceptron/dataset/train-images.idx3-ubyte')
+        './dataset/train-images.idx3-ubyte')
     train_label = idx2numpy.convert_from_file(
-        './Perceptron/dataset/train-labels.idx1-ubyte')
+        './dataset/train-labels.idx1-ubyte')
     test_set = idx2numpy.convert_from_file(
-        './Perceptron/dataset/t10k-images.idx3-ubyte')
+        './dataset/t10k-images.idx3-ubyte')
     test_label = idx2numpy.convert_from_file(
-        './Perceptron/dataset/t10k-labels.idx1-ubyte')
+        './dataset/t10k-labels.idx1-ubyte')
 except FileNotFoundError as e:
     print("One or more data files not found.")
     print(e)
