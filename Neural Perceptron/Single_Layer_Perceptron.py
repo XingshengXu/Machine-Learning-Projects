@@ -3,7 +3,7 @@ import numpy as np
 
 class SLPClassifier:
     """
-    A Single Layer Perceptron Classifier consists of a single layer of output nodes connected to 
+    A Single Layer Perceptron (SLP) Classifier consists of a single layer of output nodes connected to 
     a layer of input nodes. The learning process involves adjusting the model parameters iteratively 
     to minimize the cross-entropy loss between the predicted and actual class labels.
 
@@ -12,8 +12,6 @@ class SLPClassifier:
         max_iterations (int, optional): Maximum number of iterations for the training loop.
 
     Attributes:
-        sigma (float): Threshold value for determining class labels from output.
-        threshold (int): Threshold value for converting grayscale images to binary images.
         iteration (int): Counter for iterations during training.
         cost (float): Current cost (cross-entropy loss) value.
         cost_memo (list): Record of cost at each iteration.
@@ -24,21 +22,19 @@ class SLPClassifier:
         label (np.array): One-hot encoded actual class labels.
     """
 
-    def __init__(self, learning_rate=0.1, max_iterations=100):
+    def __init__(self, learning_rate=0.1, max_iterations=1000):
         self.learning_rate = learning_rate
         self.max_iterations = max_iterations
-        self.sigma = 0
-        self.threshold = 128
         self.iteration = 0
         self.cost = 0
         self.cost_memo = []
         self.IsFitted = False
 
-    def grayscale_to_binary(self, image, threshold):
-        """Greyscale to Binary Image Function."""
+    def softmax(self, x):
+        """Build softmax function."""
 
-        filter_image = image >= threshold
-        return filter_image
+        e_x = np.exp(x - np.max(x, axis=0))
+        return e_x / e_x.sum(axis=0)
 
     def fit(self, image, label):
         """Train the model with the given training set."""
@@ -50,7 +46,7 @@ class SLPClassifier:
         self.theta = np.random.randn(self.image_size ** 2, 10)
 
         # Transfer images from grayscale to binary
-        self.image = self.grayscale_to_binary(image, self.threshold)
+        self.image = image / 255
 
         # Reshape image size from 2D to 1D
         self.image = self.image.reshape(self.sample_number, -1).T
@@ -61,7 +57,7 @@ class SLPClassifier:
         # Single layer perceptron training
         while self.iteration <= self.max_iterations:
             net = self.theta.T @ self.image
-            pred_y = net >= self.sigma
+            pred_y = self.softmax(net)
             error = self.label - pred_y
             grad = self.image @ error.T
             self.theta += self.learning_rate * grad
@@ -75,7 +71,6 @@ class SLPClassifier:
             print(f'{self.iteration} iterations')
 
         print(f"Training finished after {self.iteration} iterations.")
-        print(f"Theta values:{self.theta}")
 
         self.IsFitted = True
 
@@ -83,7 +78,7 @@ class SLPClassifier:
         """Predicts the label of given images using the trained model."""
 
         # Convert grayscale images to binary images
-        image = self.grayscale_to_binary(image, self.threshold)
+        image = image / 255
         image = image.reshape(image.shape[0], -1).T
 
         if not self.IsFitted:
@@ -91,7 +86,7 @@ class SLPClassifier:
                 "Model is not fitted, call 'fit' with appropriate arguments before using model.")
         else:
             h_func = self.theta.T @ image
-            pred_y = h_func >= self.sigma
+            pred_y = self.softmax(h_func)
 
             # Convert the predicted outputs to label
             pred_label = np.argmax(pred_y, axis=0)
