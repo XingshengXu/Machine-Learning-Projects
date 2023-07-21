@@ -45,13 +45,13 @@ class SLPClassifier:
         # Initialize theta now that we know image_size
         self.theta = np.random.randn(self.image_size ** 2, 10)
 
-        # Transfer images from grayscale to binary
+        # Normalize the input images
         self.image = image / 255
 
         # Reshape image size from 2D to 1D
         self.image = self.image.reshape(self.sample_number, -1).T
 
-        # Convert labels to expected outputs
+        # Convert labels to one-hot encoding
         self.label = np.eye(10)[label].T
 
         # Single layer perceptron training
@@ -77,7 +77,7 @@ class SLPClassifier:
     def predict_label(self, image):
         """Predicts the label of given images using the trained model."""
 
-        # Convert grayscale images to binary images
+        # Normalize the input images
         image = image / 255
         image = image.reshape(image.shape[0], -1).T
 

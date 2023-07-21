@@ -14,9 +14,6 @@ class MLPClassifier:
         hidden_node_number (int, optional): Number of nodes in the hidden layer.
 
     Attributes:
-        learning_rate (float): The learning rate for gradient descent.
-        max_iterations (int): The maximum number of iterations for the training loop.
-        hidden_node_number (int): The number of nodes in the hidden layer.
         alpha_momentum (float): Momentum term to improve convergence.
         iteration (int): Counter for iterations during training.
         cost (float): Current cost (cross-entropy loss) value.
@@ -65,16 +62,16 @@ class MLPClassifier:
         self.weights_hidden_prev = np.zeros(self.weights_hidden.shape)
         self.weights_output_prev = np.zeros(self.weights_output.shape)
 
-        # Transfer images from grayscale to binary
+        # Normalize the input images
         self.image = image / 255
 
         # Reshape image size from 2D to 1D
         self.image = self.image.reshape(self.sample_number, -1).T
 
-        # Convert labels to expected outputs
+        # Convert labels to one-hot encoding
         self.label = np.eye(10)[label].T
 
-        # Single layer perceptron training
+        # Multi layer perceptron training
         while self.iteration <= self.max_iterations:
             net_hidden = self.weights_hidden.T @ self.image
             hidden_nodes = self.sigmoid(net_hidden)
@@ -113,7 +110,7 @@ class MLPClassifier:
     def predict_label(self, image):
         """Predicts the label of given images using the trained model."""
 
-        # Convert grayscale images to binary images
+        # Normalize the input images
         image = image / 255
         image = image.reshape(image.shape[0], -1).T
 
