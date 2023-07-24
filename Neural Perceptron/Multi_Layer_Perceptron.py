@@ -26,6 +26,7 @@ class MLPClassifier:
         weights_output_prev (np.array): Previous update for weights of the output layer.
         image (np.array): Processed input images used for training.
         label (np.array): One-hot encoded actual class labels.
+        IsFitted (bool): Boolean flag to indicate if the model is trained.
     """
 
     def __init__(self, learning_rate=0.4, max_iterations=1000, hidden_node_number=10):

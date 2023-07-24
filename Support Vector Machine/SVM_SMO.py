@@ -145,6 +145,7 @@ class SupportVectorMachine():
         support_ys (numpy.ndarray): An array storing the binary labels (-1, 1) of the support vectors.
         b (float): The intercept of the model used in prediction.
         w (numpy.ndarray): An array storing the weights of the model. Only applicable for linear kernel.
+        IsFitted (bool): Boolean flag to indicate if the model is trained.
     '''
 
     def __init__(self, kernel='linear', C=1, gamma=1, degree=3):

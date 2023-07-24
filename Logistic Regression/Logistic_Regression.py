@@ -21,6 +21,7 @@ class LogisticRegression:
         iteration (int): Counter for iterations.
         cost (float): Current cost value.
         cost_memo (list): Memory of cost at each iteration.
+        IsFitted (bool): Boolean flag to indicate if the model is trained.
     """
 
     def __init__(self, algorithm='BGD', learning_rate=0.01, max_iterations=1000):

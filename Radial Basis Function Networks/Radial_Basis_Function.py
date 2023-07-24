@@ -24,9 +24,10 @@ class RBFNetworks:
         weights_output_prev (np.array): Previous model weights.
         image (np.array): Processed input images used for training.
         label (np.array): One-hot encoded actual class labels.
-        cluster_nodes (np.array): The nodes in each cluster, obtained from the KMeans algorithm.
-        cluster_centers (np.array): The centers of each cluster, obtained from the KMeans algorithm.
-        std_devs (np.array): The standard deviations of each cluster, obtained from the KMeans algorithm.
+        cluster_nodes (np.array): The nodes in each cluster.
+        cluster_centers (np.array): The centers of each cluster.
+        std_devs (np.array): The standard deviations of each cluster.
+        IsFitted (bool): Boolean flag to indicate if the model is trained.
     """
 
     def __init__(self, learning_rate=0.4, cluster_number=20, max_iterations=3000):

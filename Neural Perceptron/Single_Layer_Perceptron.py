@@ -20,6 +20,7 @@ class SLPClassifier:
         theta (np.array): Model weights.
         image (np.array): Processed input images used for training.
         label (np.array): One-hot encoded actual class labels.
+        IsFitted (bool): Boolean flag to indicate if the model is trained.
     """
 
     def __init__(self, learning_rate=0.1, max_iterations=1000):

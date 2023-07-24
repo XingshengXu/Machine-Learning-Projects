@@ -13,6 +13,7 @@ class NormalEquations:
     Attributes:
         X (np.array): The input training dataset.
         y (np.array): The target values.
+        IsFitted (bool): Boolean flag to indicate if the model is trained.
     """
 
     def __init__(self):
