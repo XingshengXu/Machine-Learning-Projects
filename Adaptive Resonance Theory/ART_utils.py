@@ -227,7 +227,7 @@ def interactive_data_collection_classification():
     Create an interactive plot for collecting data points for a Classification Task.
 
     The function allows you to interactively add points of two classes by left-clicking
-    for class 0 and right-clicking for class 1. It also allows you to train a Adaptive 
+    for class 0 and right-clicking for class 1. It also allows you to train an Adaptive 
     Resonance Theory Classifier and visualize the decision boundaries by clicking the 
     'Train' button, or to clear all data points and start over by clicking the 'Clean' 
     button.
@@ -237,7 +237,7 @@ def interactive_data_collection_classification():
     coords, labels = [], []
 
     # Set color for each class
-    class_colors = ['blue', 'yellow']
+    class_colors = ['blue', 'red']
 
     # Create an interactive plot
     fig, ax = plt.subplots(figsize=(10, 7))
