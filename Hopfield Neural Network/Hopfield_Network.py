@@ -75,7 +75,10 @@ class HopfieldNetwork:
         return np.where(noise_mask, -image, image)
 
     def fit(self, X, y):
-        """Train the model with the given training set."""
+        """
+        Fit the model using input matrix and corresponding labels.
+        Note, the input data matrix should have the shape of (n_samples, n_features).
+        """
 
         pattern_size = X.shape[1]
 

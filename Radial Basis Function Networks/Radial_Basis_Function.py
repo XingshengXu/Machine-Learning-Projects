@@ -110,7 +110,10 @@ class RBFNetworks:
         return cluster_nodes, cluster_centers, std_devs
 
     def fit(self, image, label):
-        """Train the model with the given training set."""
+        """
+        Fit the model using input matrix and corresponding labels.
+        Note, the input data matrix should have the shape of (n_samples, n_features).
+        """
 
         # Determine sample numbers and image_size from input
         self.sample_number, self.image_size = image.shape[0:2]

@@ -287,7 +287,10 @@ class ClassificationTree(Tree):
                 return subtree
 
     def fit(self, X, y):
-        '''Build the Classification Tree by recursively calling the __fit method.'''
+        '''
+        Build the Classification Tree by recursively calling the __fit method.
+        Note, the input data matrix should have the shape of (n_samples, n_features).
+        '''
         self.root = self.__fit(self.root, 1, X, y)
 
 

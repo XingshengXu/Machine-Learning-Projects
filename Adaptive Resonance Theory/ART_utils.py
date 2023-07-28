@@ -12,7 +12,7 @@ def generate_test_data(n_samples=100, n_features=2, centers=2, std=0.5):
     """Generate a test dataset with n-dimensional instances."""
 
     X, y = make_blobs(n_samples=n_samples, n_features=n_features, centers=centers,
-                      random_state=0, cluster_std=std)
+                      random_state=44, cluster_std=std)
 
     # Normalization of input data
     scaler = MinMaxScaler()
@@ -37,7 +37,7 @@ def complement_coding(input_data):
     return np.hstack((input_data, complement_data))
 
 
-def create_contour_plot(art, X, y, resolution=1000, alpha=0.5):
+def create_contour_plot(art, X, y, resolution=500, alpha=0.5):
     """Plot the decision boundary of the clusters formed by the ART model"""
 
     # We only use the first two dimensions of X for plotting.
@@ -68,7 +68,8 @@ def create_contour_plot(art, X, y, resolution=1000, alpha=0.5):
 
     plt.xlabel('Feature One')
     plt.ylabel('Feature Two')
-    plt.title('Fuzzy Adaptive Resonance Theory Classifier')
+    plt.title(
+        'Decision Boundaries Visualized by Fuzzy Adaptive Resonance Theory Classifier')
 
     plt.show()
 

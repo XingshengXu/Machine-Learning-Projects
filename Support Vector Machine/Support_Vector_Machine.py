@@ -62,25 +62,30 @@ class SupportVectorMachine():
             self.C = None
 
     def linear_kernel(self, x1, x2):
-        '''Linear kernel function.'''
+        '''Build linear kernel function.'''
+
         return np.dot(x1, x2)
 
     def polynomial_kernel(self, x1, x2):
-        '''Polynomial kernel function.'''
+        '''Build polynomial kernel function.'''
+
         return (1 + np.dot(x1, x2)) ** self.degree
 
     def radial_basis_function_kernel(self, x1, x2):
-        '''Gaussian Radial Basis Function.'''
+        '''Build gaussian radial basis function.'''
+
         return np.exp(-self.gamma * (np.linalg.norm(x1-x2) ** 2))
 
     def calculate_intercept(self, K, IsSV):
-        '''Calculate the model intercept (b)'''
+        '''Calculate the model intercept (b).'''
+
         #! b = 1/N * Σ(y_i - Σα_j * y_j * K(x_i, x_j))
         self.b = np.mean(self.support_ys - np.sum(self.support_alphas *
                          self.support_ys * K[IsSV][:, IsSV], axis=1))
 
     def calculate_weights(self):
-        '''Calculate the model weights (w)'''
+        '''Calculate the model weights (w).'''
+
         if self.kernel == self.linear_kernel:
             #! w = Σα_i * y_i * x_i
             self.w = np.sum(
@@ -89,6 +94,11 @@ class SupportVectorMachine():
             self.w = None
 
     def fit(self, X, y):
+        """
+        Fit the model using input matrix and corresponding labels.
+        Note, the input data matrix should have the shape of (n_samples, n_features).
+        """
+
         n = X.shape[0]
 
         # Apply the kernel function resulting in a Gram matrix K
@@ -137,6 +147,7 @@ class SupportVectorMachine():
 
     def decision_function(self, X):
         '''Calculate and return the real valued prediction of the model.'''
+
         if not self.IsFitted:
             raise ValueError(
                 "Model is not fitted, call 'fit' with appropriate arguments before using model.")
@@ -154,6 +165,7 @@ class SupportVectorMachine():
 
     def predict(self, X):
         '''Return the models predicted class for each of the given instances.'''
+
         if not self.IsFitted:
             raise ValueError(
                 "Model is not fitted, call 'fit' with appropriate arguments before using model.")
