@@ -12,7 +12,7 @@ def generate_test_data(n_samples=100, n_features=2, centers=2, std=0.5):
     """Generate a test dataset with n-dimensional instances."""
 
     X, y = make_blobs(n_samples=n_samples, n_features=n_features, centers=centers,
-                      random_state=44, cluster_std=std)
+                      random_state=0, cluster_std=std)
 
     # Normalization of input data
     scaler = MinMaxScaler()
