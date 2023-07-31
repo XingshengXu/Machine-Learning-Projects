@@ -95,8 +95,18 @@ class Tree():
         # Otherwise, predict on the right subtree
         return self.__predict_probs(subtree.right, sample)
 
+    def predict_proba(self, sample):
+        """Predict the class probabilities of the sample for Ensemble Models."""
+
+        if self.root is None:
+            raise AttributeError(
+                f"Model not fitted, call 'fit' with appropriate arguments before using model.")
+        else:
+            classes = self.__predict_proba(self.root, sample)
+            return classes / np.sum(classes)
+
     def predict_value(self, sample):
-        """Predict the class probabilities of the sample for regression."""
+        """Predict the output value of the sample based on average value for Regression Tree."""
 
         if self.root is None:
             raise AttributeError(
@@ -107,7 +117,7 @@ class Tree():
         return value
 
     def predict_class(self, sample):
-        """Predict the class of the sample based on frequencies for Classification Tree."""
+        """Predict the class of the sample based on majority frequency for Classification Tree."""
 
         if self.root is None:
             raise AttributeError(
@@ -263,19 +273,19 @@ class ClassificationTree(Tree):
             len(X) < self.min_split_samples or
             is_gini_zero or is_entropy_zero
         ):
-            return Node(None, class_frequency)
+            return Node(feature_threshold=None, class_frequency=class_frequency)
         else:
             # Recursive case: If not a leaf node, compute the best split
             (best_left, best_right, best_split_point) = self.best_split(X, y)
 
             # If no valid split point is found, return a leaf node
             if best_split_point is None:
-                return Node(None, class_frequency)
+                return Node(feature_threshold=None, class_frequency=class_frequency)
 
             # Check if the split leads to leaf nodes with too few samples
             if (len(best_left) < self.min_leaf_samples or
                     len(best_right) < self.min_leaf_samples):
-                return Node(None, class_frequency)
+                return Node(feature_threshold=None, class_frequency=class_frequency)
             else:
                 subtree = Node(best_split_point, class_frequency)
                 X_left, y_left = best_left[:, :-1], best_left[:, -1]
@@ -410,19 +420,19 @@ class RegressionTree(Tree):
             len(X) < self.min_split_samples or
             is_mse_zero or is_mae_zero
         ):
-            return Node(None, mean_y)
+            return Node(feature_threshold=None, class_frequency=mean_y)
         else:
             # Recursive case: If not a leaf node, compute the best split
             (best_left, best_right, best_split_point) = self.best_split(X, y)
 
             # If no valid split point is found, return a leaf node
             if best_split_point is None:
-                return Node(None, mean_y)
+                return Node(feature_threshold=None, class_frequency=mean_y)
 
             # Check if the split leads to leaf nodes with too few samples
             if (len(best_left) < self.min_leaf_samples or
                     len(best_right) < self.min_leaf_samples):
-                return Node(None, mean_y)
+                return Node(feature_threshold=None, class_frequency=mean_y)
             else:
                 subtree = Node(best_split_point, mean_y)
                 X_left, y_left = best_left[:, :-1], best_left[:, -1]

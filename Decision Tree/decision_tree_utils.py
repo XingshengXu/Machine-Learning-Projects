@@ -4,7 +4,7 @@ import numpy as np
 import seaborn as sns
 from matplotlib.widgets import Button
 from sklearn.metrics import classification_report, confusion_matrix, r2_score
-from decisiontree import ClassificationTree, RegressionTree
+from Decisiontree import ClassificationTree, RegressionTree
 
 
 def evaluate_model(test_y, pred_y, model_type):
