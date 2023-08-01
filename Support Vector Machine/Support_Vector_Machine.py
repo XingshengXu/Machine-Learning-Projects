@@ -163,7 +163,7 @@ class SupportVectorMachine():
                            * kernel_vals, axis=1)
             return preds + self.b
 
-    def predict(self, X):
+    def predict_class(self, X):
         '''Return the models predicted class for each of the given instances.'''
 
         if not self.IsFitted:

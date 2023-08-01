@@ -52,7 +52,7 @@ def create_contour_plot(tree, X, y, resolution=500, alpha=0.5):
                          np.linspace(X_two_min, X_two_max, resolution))
     X_plot = [[x1, x2] for x1, x2 in zip(X1.flatten(), X2.flatten())]
 
-    Y = np.array([tree.predict_class(np.array(x)) for x in X_plot])
+    Y = tree.predict_class(X_plot)
     Y = Y.reshape(X1.shape)
 
     plt.figure(figsize=(10, 7))
@@ -88,7 +88,7 @@ def create_regression_plot(tree, X, y):
     y = np.array(y)
 
     # Get the predictions of Regression Tree
-    pred_y = [tree.predict_value(x) for x in X]
+    pred_y = tree.predict_value(X)
 
     # Plot the predictions of each model on the same set of axes.
     plt.figure(figsize=(10, 7))
@@ -98,9 +98,9 @@ def create_regression_plot(tree, X, y):
         zip(X, pred_y))], c='red', label='Regression')
 
     plt.legend(loc='upper center')
-    plt.xlabel('Feature one (Dimension one)')
-    plt.ylabel('Feature two (Dimension two)')
-    plt.title('Regression Tree Visualization Demo')
+    plt.xlabel('Feature one')
+    plt.ylabel('Feature two')
+    plt.title('Regression Tree Regression Demo')
     plt.show()
 
 

@@ -48,9 +48,9 @@ def create_regression_plot(knn, X, y):
         zip(X, pred_y))], c='red', label='Regression')
 
     plt.legend(loc='upper center')
-    plt.xlabel('Feature one (Dimension one)')
-    plt.ylabel('Feature two (Dimension two)')
-    plt.title('K-Nearest Neighbors Regressor Visualization Demo')
+    plt.xlabel('Feature one')
+    plt.ylabel('Feature two')
+    plt.title('K-Nearest Neighbors Regression Demo')
     plt.show()
 
 

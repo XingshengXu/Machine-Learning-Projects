@@ -80,9 +80,9 @@ class Tree():
     def __predict_probs(self, subtree, sample):
         """Private method to return the class frequencies of the sample associated with the node."""
 
-        # Reshape the input if the sample is a scalar
-        if sample.ndim == 0:
-            sample = np.array([sample])
+        # Ensure the sample is a numpy array
+        if not isinstance(sample, np.ndarray):
+            sample = np.array(sample)
 
         # If the subtree is a leaf, return the class frequencies
         if subtree.feature_threshold is None:
@@ -95,37 +95,40 @@ class Tree():
         # Otherwise, predict on the right subtree
         return self.__predict_probs(subtree.right, sample)
 
-    def predict_proba(self, sample):
-        """Predict the class probabilities of the sample for Ensemble Models."""
+    def predict_proba(self, X):
+        """Predict the class probabilities of the samples for Ensemble Models."""
 
         if self.root is None:
             raise AttributeError(
                 f"Model not fitted, call 'fit' with appropriate arguments before using model.")
         else:
-            classes = self.__predict_proba(self.root, sample)
-            return classes / np.sum(classes)
+            probabilities = [self.__predict_probs(
+                self.root, sample) for sample in X]
+            normalized_probability = [
+                probability / np.sum(probability) for probability in probabilities]
+            return np.array(normalized_probability)
 
-    def predict_value(self, sample):
-        """Predict the output value of the sample based on average value for Regression Tree."""
-
-        if self.root is None:
-            raise AttributeError(
-                f"Model not fitted, call 'fit' with appropriate arguments before using model.")
-
-        # Perform prediction traversing the entire tree
-        value = self.__predict_probs(self.root, sample)
-        return value
-
-    def predict_class(self, sample):
-        """Predict the class of the sample based on majority frequency for Classification Tree."""
+    def predict_value(self, X):
+        """Predict the output value of the samples based on average value for Regression Tree."""
 
         if self.root is None:
             raise AttributeError(
                 f"Model not fitted, call 'fit' with appropriate arguments before using model.")
 
-        # Perform prediction traversing the entire tree
-        classes = self.__predict_probs(self.root, sample)
-        return np.argmax(classes)
+        values = [self.__predict_probs(self.root, sample) for sample in X]
+        return np.array(values)
+
+    def predict_class(self, X):
+        """Predict the class of the samples based on majority frequency for Classification Tree."""
+
+        if self.root is None:
+            raise AttributeError(
+                f"Model not fitted, call 'fit' with appropriate arguments before using model.")
+
+        # Use list comprehension to make predictions for each sample in X
+        classes = [np.argmax(self.__predict_probs(self.root, sample))
+                   for sample in X]
+        return np.array(classes)
 
 
 class ClassificationTree(Tree):
