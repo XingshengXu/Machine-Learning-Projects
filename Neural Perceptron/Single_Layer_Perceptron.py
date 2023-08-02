@@ -15,11 +15,9 @@ class SLPClassifier:
         iteration (int): Counter for iterations during training.
         cost (float): Current cost (cross-entropy loss) value.
         cost_memo (list): Record of cost at each iteration.
-        sample_number (int): Number of training samples.
-        image_size (int): Size of each input image.
+        X (np.array): Transposed input data matrix used for training.
+        y (np.array): One-hot encoded actual class labels.
         theta (np.array): Model weights.
-        image (np.array): Processed input images used for training.
-        label (np.array): One-hot encoded actual class labels.
         IsFitted (bool): Boolean flag to indicate if the model is trained.
     """
 
@@ -32,43 +30,46 @@ class SLPClassifier:
         self.IsFitted = False
 
     def softmax(self, x):
-        """Build softmax function."""
+        """Build softmax function for converting network output to probability distribution."""
 
         e_x = np.exp(x - np.max(x, axis=0))
         return e_x / e_x.sum(axis=0)
 
-    def fit(self, image, label):
+    def fit(self, X, y):
         """
         Fit the model using input matrix and corresponding labels.
-        Note, the input data matrix should have the shape of (n_samples, n_features).
+        Note, the input data matrix should have the shape of (sample_number, feature_number).
         """
 
-        # Determine sample numbers and image_size from input
-        self.sample_number, self.image_size = image.shape[0:2]
+        # Determine number of classes
+        classe_number = len(np.unique(y))
 
-        # Initialize theta now that we know image_size
-        self.theta = np.random.randn(self.image_size ** 2, 10)
-
-        # Normalize the input images
-        self.image = image / 255
-
-        # Reshape image size from 2D to 1D
-        self.image = self.image.reshape(self.sample_number, -1).T
+        # Store the input data
+        self.X = X.T
 
         # Convert labels to one-hot encoding
-        self.label = np.eye(10)[label].T
+        self.y = np.eye(classe_number)[y].T
+
+        # Determine sample number and feature number from input
+        feature_number, sample_number = self.X.shape
+
+        # Initialize weights theta
+        self.theta = np.random.randn(feature_number, classe_number)
 
         # Single layer perceptron training
-        while self.iteration <= self.max_iterations:
-            net = self.theta.T @ self.image
+        while self.iteration < self.max_iterations:
+
+            # Forward propagation: compute network output
+            net = self.theta.T @ self.X
             pred_y = self.softmax(net)
-            error = self.label - pred_y
-            grad = self.image @ error.T
+
+            # Backward propagation: compute error and update weights
+            error = self.y - pred_y
+            grad = self.X @ error.T
             self.theta += self.learning_rate * grad
 
             # Compute the cross-entropy loss
-            self.cost = -np.sum(self.label *
-                                np.log(pred_y + 1e-8)) / self.sample_number
+            self.cost = -np.sum(self.y * np.log(pred_y + 1e-8)) / sample_number
             self.cost_memo.append(self.cost)
 
             self.iteration += 1
@@ -78,18 +79,14 @@ class SLPClassifier:
 
         self.IsFitted = True
 
-    def predict_label(self, image):
-        """Predicts the label of given images using the trained model."""
-
-        # Normalize the input images
-        image = image / 255
-        image = image.reshape(image.shape[0], -1).T
+    def predict_class(self, X):
+        """Predicts the label of given data using the trained model."""
 
         if not self.IsFitted:
             raise ValueError(
                 "Model is not fitted, call 'fit' with appropriate arguments before using model.")
         else:
-            h_func = self.theta.T @ image
+            h_func = self.theta.T @ X.T
             pred_y = self.softmax(h_func)
 
             # Convert the predicted outputs to label
