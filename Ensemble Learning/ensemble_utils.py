@@ -6,9 +6,11 @@ import path_setup
 from matplotlib.widgets import Button
 from sklearn.metrics import classification_report, confusion_matrix, r2_score
 from Decisiontree import ClassificationTree, RegressionTree
-from Ensemble_Learning import VotingClassifier, VotingRegressor
+from Ensemble_Learning import *
 from K_Nearest_Neighbors import KNNClassifier, KNNRegressor
 from Logistic_Regression import LogisticRegression
+from LWLR import LocalWeightedLinearRegression
+from Single_Layer_Perceptron import SLPClassifier
 
 
 def evaluate_model(test_y, pred_y, model_type):
@@ -54,7 +56,7 @@ def create_contour_plot(model, X, y, resolution=500, alpha=0.5):
     # Calculate the decision boundary of the model.
     X1, X2 = np.meshgrid(np.linspace(X_one_min, X_one_max, resolution),
                          np.linspace(X_two_min, X_two_max, resolution))
-    X_plot = [[x1, x2] for x1, x2 in zip(X1.flatten(), X2.flatten())]
+    X_plot = np.array([[x1, x2] for x1, x2 in zip(X1.flatten(), X2.flatten())])
 
     Y = model.predict_class(X_plot)
     Y = Y.reshape(X1.shape)
@@ -121,14 +123,17 @@ def interactive_data_collection_classification(model):
     # Set color for each class
     class_colors = ['blue', 'yellow']
 
-    # Select the corresponding model
+    # Create base estimators.
+    slp = SLPClassifier()
+    log_reg = LogisticRegression()
+    knn = KNNClassifier()
+
+    # Select the corresponding ensemble model
     if model == 'voting':
-        # Create base estimators.
-        tree = ClassificationTree()
-        log_reg = LogisticRegression()
-        knn = KNNClassifier()
         model = VotingClassifier(
-            classifiers=[tree, log_reg, knn], voting='hard')
+            classifiers=[slp, log_reg, knn], voting='hard')
+    elif model == 'stacking':
+        model = StackingClassifier(classifiers=[slp, knn])
     else:
         print("Invalid model name. Please choose among 'voting', 'classification'.")
 
@@ -202,12 +207,16 @@ def interactive_data_collection_regression(model):
     # Initialize click coordinates and values
     data_points = []
 
-    # Select the corresponding model
+    # Create base estimators.
+    tree = RegressionTree()
+    knn = KNNRegressor()
+    lwlr = LocalWeightedLinearRegression(tau=0.5)
+
+    # Select the corresponding ensemble model
     if model == 'voting':
-        # Create base estimators.
-        tree = RegressionTree()
-        knn = KNNRegressor()
-        model = VotingRegressor(regressors=[tree, knn])
+        model = VotingRegressor(regressors=[tree, knn, lwlr])
+    elif model == 'stacking':
+        model = StackingRegressor(regressors=[lwlr, knn])
     else:
         print("Invalid model name. Please choose among 'voting', 'classification'.")
 
