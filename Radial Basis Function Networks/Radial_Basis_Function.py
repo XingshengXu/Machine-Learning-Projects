@@ -19,10 +19,10 @@ class RBFNetworks:
         cost (float): Current cost (cross-entropy loss) value.
         cost_memo (list): Record of cost at each iteration.
         sample_number (int): Number of training samples.
-        image_size (int): Size of each input image.
+        input_size (int): Size of each input.
         weights_output (np.array): Model weights.
         weights_output_prev (np.array): Previous model weights.
-        image (np.array): Processed input images used for training.
+        data (np.array): Input data used for training.
         label (np.array): One-hot encoded actual class labels.
         cluster_nodes (np.array): The nodes in each cluster.
         cluster_centers (np.array): The centers of each cluster.
@@ -48,13 +48,13 @@ class RBFNetworks:
         return e_x / e_x.sum(axis=0)
 
     def gaussian(self, x, center, sigma):
-        """Gaussian radial basis function."""
+        """Build gaussian radial basis function as activation function."""
 
         return np.exp(-0.5 * np.sum(((x - center) / sigma) ** 2, axis=0))
 
-    def kmeans(self, image):
+    def kmeans(self, X):
         """
-        Applies the KMeans algorithm to the provided image data to find cluster centers and standard deviations.
+        Applies the KMeans algorithm to the provided data to find cluster centers and standard deviations.
         Returns the cluster nodes, cluster centers, and standard deviations for each cluster.
         """
 
@@ -66,7 +66,7 @@ class RBFNetworks:
 
         # Initiate cluster centers
         np.random.seed(42)
-        cluster_centers = image[:, np.random.choice(
+        cluster_centers = X[:, np.random.choice(
             self.sample_number, self.cluster_number, replace=False)]
 
         for kmeans_iterations in range(self.max_kmeans_iterations):
@@ -74,24 +74,24 @@ class RBFNetworks:
             # Assignment Step: Assign each example to the closest center
             for i in range(self.cluster_number):
                 dist[i, :] = np.linalg.norm(
-                    image - cluster_centers[:, i, np.newaxis], axis=0)
+                    X - cluster_centers[:, i, np.newaxis], axis=0)
 
             class_id = np.argmin(dist, axis=0)
 
             # Update Step: Compute new centers as the mean of all examples assigned to each cluster
             for i in range(self.cluster_number):
-                points_in_cluster = image[:, class_id == i]
+                points_in_cluster = X[:, class_id == i]
 
                 if points_in_cluster.size > 0:
                     cluster_centers[:, i] = np.mean(points_in_cluster, axis=1)
                 else:
-                    cluster_centers[:, i] = image[:,
-                                                  np.random.choice(self.sample_number, 1)]
+                    cluster_centers[:, i] = X[:,
+                                              np.random.choice(self.sample_number, 1)]
             print(f'kmeans_iterations: {kmeans_iterations}')
 
         # Compute the standard deviation for each cluster
         for i in range(self.cluster_number):
-            points_in_cluster = image[:, class_id == i]
+            points_in_cluster = X[:, class_id == i]
 
             if points_in_cluster.size > 0:
                 squared_distances = np.linalg.norm(
@@ -102,51 +102,49 @@ class RBFNetworks:
                 std_devs[i] = 1.0
 
         # Compute the cluster nodes
-        cluster_nodes = np.zeros((self.cluster_number, self.image.shape[1]))
+        cluster_nodes = np.zeros((self.cluster_number, self.X.shape[1]))
         for i in range(self.cluster_number):
             cluster_nodes[i, :] = self.gaussian(
-                self.image, cluster_centers[:, i, np.newaxis], std_devs[i])
+                self.X, cluster_centers[:, i, np.newaxis], std_devs[i])
 
         return cluster_nodes, cluster_centers, std_devs
 
-    def fit(self, image, label):
+    def fit(self, X, y):
         """
         Fit the model using input matrix and corresponding labels.
-        Note, the input data matrix should have the shape of (n_samples, n_features).
+        Note, the input data matrix should have the shape of (sample_number, feature_number).
         """
 
-        # Determine sample numbers and image_size from input
-        self.sample_number, self.image_size = image.shape[0:2]
+        # Determine sample number
+        self.sample_number = X.shape[0]
 
-        # Initialize theta now that we know image_size
-        self.weights_output = np.random.randn(self.cluster_number, 10)
+        # Initialize weights
+        self.weights_output = np.random.randn(
+            self.cluster_number, len(np.unique(y)))
         self.weights_output_prev = np.zeros(self.weights_output.shape)
 
-        # Normalize the input images
-        self.image = image / 255
-
-        # Reshape image size from 2D to 1D
-        self.image = self.image.reshape(self.sample_number, -1).T
+        # Store the input data
+        self.X = X.T
 
         # Convert labels to one-hot encoding
-        self.label = np.eye(10)[label].T
+        self.y = np.eye(len(np.unique(y)))[y].T
 
         # Perform KMeans clustering to initialize the RBF network
         self.cluster_nodes, self.cluster_centers, self.std_devs = self.kmeans(
-            self.image)
+            self.X)
 
         # Radial basis function networks training
-        while self.iteration <= self.max_iterations:
+        while self.iteration < self.max_iterations:
             net_output = self.weights_output.T @ self.cluster_nodes
             pred_y = self.softmax(net_output)
 
             # Compute the cross-entropy loss
-            self.cost = -np.sum(self.label *
+            self.cost = -np.sum(self.y *
                                 np.log(pred_y + 1e-8)) / self.sample_number
             self.cost_memo.append(self.cost)
 
             # Backpropagation
-            delta_output = self.label - pred_y
+            delta_output = self.y - pred_y
 
             # Update output weights
             grad_output = self.cluster_nodes @ delta_output.T
@@ -161,15 +159,13 @@ class RBFNetworks:
 
         self.IsFitted = True
 
-    def predict_label(self, image):
-        """Predicts the label of given images using the trained model."""
+    def predict_class(self, X):
+        """Predicts the label of given data using the trained model."""
 
-        # Normalize the input images
-        image = image / 255
-        image = image.reshape(image.shape[0], -1).T
+        X = X.T
 
         # Initialize the cluster nodes
-        cluster_nodes = np.zeros((self.cluster_number, image.shape[1]))
+        cluster_nodes = np.zeros((self.cluster_number, X.shape[1]))
 
         if not self.IsFitted:
             raise ValueError(
@@ -177,7 +173,7 @@ class RBFNetworks:
         else:
             for i in range(self.cluster_number):
                 cluster_nodes[i, :] = self.gaussian(
-                    image, self.cluster_centers[:, i, np.newaxis], self.std_devs[i])
+                    X, self.cluster_centers[:, i, np.newaxis], self.std_devs[i])
 
             net_output = self.weights_output.T @ cluster_nodes
             pred_y = self.softmax(net_output)
