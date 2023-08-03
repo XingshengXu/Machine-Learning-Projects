@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, r2_score
 
 
 def preprocess_image(image):
@@ -19,23 +19,40 @@ def preprocess_image(image):
     return X
 
 
-def evaluate_model(test_y, pred_y):
+def evaluate_model(test_y, pred_y, model_type):
     """
-    Evaluate the performance of a model by printing the Classification Report
-    and creating Confusion Matrix.
+    Evaluate the performance of a model and prints the appropriate performance metrics 
+    based on the type of the model. For classification models, it prints the classification 
+    report and plots the confusion matrix. For regression models, it calculates and prints 
+    the R-squared score.
     """
 
-    # Print Classification Report
-    print(classification_report(test_y, pred_y, zero_division=0))
+    if model_type == 'regression':
 
-    # Create Confusion Matrix
-    cm = confusion_matrix(test_y, pred_y)
-    plt.figure(figsize=(10, 7))
-    sns.heatmap(cm, annot=True, cmap='Blues')
-    plt.title('Confusion Matrix')
-    plt.xlabel('Predicted')
-    plt.ylabel('Actual')
-    plt.show()
+        # Ensure pred_y is 1D
+        pred_y = pred_y.flatten()
+
+        # Calculate R-squared
+        r2 = r2_score(test_y, pred_y)
+
+        print("R-squared score (R²): ", r2)
+
+    elif model_type == 'classification':
+
+        # Print classification report
+        print(classification_report(test_y, pred_y, zero_division=0))
+
+        # Create confusion matrix
+        cm = confusion_matrix(test_y, pred_y)
+        sns.heatmap(cm, annot=True, fmt='d')
+
+        plt.title('Confusion Matrix')
+        plt.xlabel('Predicted')
+        plt.ylabel('Actual')
+        plt.show()
+
+    else:
+        print("Invalid model type. Please choose either 'regression' or 'classification'.")
 
 
 def plot_cost_vs_iteration(model):
@@ -73,4 +90,30 @@ def create_contour_plot(model, X, y, resolution=500, alpha=0.5):
     plt.xlabel('Feature one')
     plt.ylabel('Feature two')
     plt.title('Decision Boundaries Visualized by RBF Networks')
+    plt.show()
+
+
+def create_regression_plot(model, X, y):
+    """Create a plot to visualize the regression predictions."""
+
+    X = np.array(X)
+    y = np.array(y)
+
+    # Get the predictions of Regression Tree
+    pred_y = model.predict_value(X)
+
+    # Ensure pred_y is 2D
+    pred_y = pred_y.T
+
+    # Plot the predictions of each model on the same set of axes.
+    plt.figure(figsize=(10, 7))
+
+    plt.scatter(X, y, s=20, c='black', marker='x', label='Target')
+    plt.plot(sorted(X), [pred for _, pred in sorted(
+        zip(X, pred_y))], c='red', label='Regression')
+
+    plt.legend(loc='upper center')
+    plt.xlabel('Feature one')
+    plt.ylabel('Feature two')
+    plt.title('RBF Networks Regression Demo')
     plt.show()
