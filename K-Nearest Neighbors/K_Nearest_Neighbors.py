@@ -34,8 +34,8 @@ class KNN:
 
     def fit(self, X, y):
         """
-        Fits the model using input matrix and corresponding labels.
-        Note, the input data matrix should have the shape of (n_samples, n_features).
+        Fit the model using input matrix and corresponding labels.
+        Note, the input data matrix should have the shape of (sample_number, feature_number).
         """
 
         if len(X.shape) == 1:

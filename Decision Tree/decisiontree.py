@@ -190,8 +190,10 @@ class ClassificationTree(Tree):
         return info_gain
 
     def calculate_improvement(self, y_left, y_right, y_parent):
-        """Calculate the appropriate impurity value based on the criterion
-        being used in the model."""
+        """
+        Calculate the appropriate impurity value based on the criterion
+        being used in the model.
+        """
 
         n = y_parent.shape[0]
 
@@ -208,8 +210,10 @@ class ClassificationTree(Tree):
             return info_gain
 
     def get_split_points(self, X):
-        """Calculates the split points in the dataset. Returns the list 
-        of these split points and the corresponding feature indices."""
+        """
+        Calculates the split points in the dataset. Returns the list 
+        of these split points and the corresponding feature indices.
+        """
 
         feature_indices = []
         split_points = []
@@ -224,8 +228,10 @@ class ClassificationTree(Tree):
         return feature_indices, split_points
 
     def best_split(self, X, y):
-        """Determine the best split for a Classification Tree based on the specified impurity criterion.
-        The function will return the split that results in the largest decrease in impurity."""
+        """
+        Determine the best split for a Classification Tree based on the specified impurity criterion.
+        The function will return the split that results in the largest decrease in impurity.
+        """
 
         # Get possible split points
         feature_indices, split_points = self.get_split_points(X)
@@ -259,8 +265,10 @@ class ClassificationTree(Tree):
         return best_left, best_right, best_split_point
 
     def __fit(self, subtree, curr_depth, X, y):
-        """Private method to recursively build the Classification Tree until all instances have been 
-        correctly classified or certain criteria have been satisfied."""
+        """
+        Private method to recursively build the Classification Tree until all instances have been 
+        correctly classified or certain criteria have been satisfied.
+        """
 
         # Count the frequency of each class in node
         class_frequency = np.bincount(y.astype(int))
@@ -300,10 +308,11 @@ class ClassificationTree(Tree):
                 return subtree
 
     def fit(self, X, y):
-        '''
+        """
         Build the Classification Tree by recursively calling the __fit method.
-        Note, the input data matrix should have the shape of (n_samples, n_features).
-        '''
+        Note, the input data matrix should have the shape of (sample_number, feature_number).
+        """
+
         self.root = self.__fit(self.root, 1, X, y)
 
 
@@ -332,20 +341,24 @@ class RegressionTree(Tree):
                 "Invalid criterion, 'mse' and 'mae' are available.")
 
     def MSE(self, y):
-        '''Calculate the mean squared error of the samples at the node per feature.'''
+        """Calculate the mean squared error of the samples at the node per feature."""
+
         y_hat = np.mean(y)
         mse = np.sum((y_hat - y)**2)
         return mse
 
     def MAE(self, y):
         """Calculate the mean absolute error of the samples at the node per feature."""
+
         y_hat = np.mean(y)
         mae = np.sum(np.abs(y_hat - y))
         return mae
 
     def calculate_improvement(self, y_left, y_right, y_parent):
-        """Calculate the reduction in error based on the criterion
-        being used in the model."""
+        """
+        Calculate the reduction in error based on the criterion
+        being used in the model.
+        """
 
         n = y_parent.shape[0]
 
@@ -361,8 +374,10 @@ class RegressionTree(Tree):
             return total_mae
 
     def get_split_points(self, X):
-        """Calculates the split points in the dataset. Returns the list 
-        of these split points and the corresponding feature indices."""
+        """
+        Calculates the split points in the dataset. Returns the list 
+        of these split points and the corresponding feature indices.
+        """
 
         feature_indices = []
         split_points = []
@@ -377,8 +392,10 @@ class RegressionTree(Tree):
         return feature_indices, split_points
 
     def best_split(self, X, y):
-        """Determine the best split for a Regression Tree based on the specified error criterion.
-        The function will return the split that results in the largest decrease in error."""
+        """
+        Determine the best split for a Regression Tree based on the specified error criterion.
+        The function will return the split that results in the largest decrease in error.
+        """
 
         if X.ndim == 1:
             X = X.reshape((-1, 1))
@@ -447,5 +464,9 @@ class RegressionTree(Tree):
                 return subtree
 
     def fit(self, X, y):
-        '''Build the Regression Tree by recursively calling the __fit method.'''
+        """
+        Build the Regression Tree by recursively calling the __fit method.
+        Note, the input data matrix should have the shape of (sample_number, feature_number).
+        """
+
         self.root = self.__fit(self.root, 1, X, y)

@@ -63,7 +63,7 @@ class LogisticRegression:
     def fit(self, X, y):
         """
         Fit the model using input matrix and corresponding labels.
-        Note, the input data matrix should have the shape of (n_samples, n_features).
+        Note, the input data matrix should have the shape of (sample_number, feature_number).
         """
 
         self.X = X

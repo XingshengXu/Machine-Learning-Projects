@@ -52,8 +52,10 @@ class AdaptiveResonanceTheory():
         return np.argsort(choice_score)[::-1]
 
     def vigilance_test(self, X_train, candidate_index):
-        """Computes the vigilance test which verifies if the selected cluster matches 
-        closely enough with the input vector."""
+        """
+        Computes the vigilance test which verifies if the selected cluster matches 
+        closely enough with the input vector.
+        """
 
         #! S_j = Σ min(X_i, w_ji) / Σ X_i
 
@@ -69,8 +71,10 @@ class AdaptiveResonanceTheory():
         return False
 
     def count_valid_clusters(self):
-        """Count the number of unique elements in cluster_id. This gives the number 
-        of clusters that have at least one instance associated with them"""
+        """
+        Count the number of unique elements in cluster_id. This gives the number 
+        of clusters that have at least one instance associated with them.
+        """
 
         unique_clusters = np.unique(self.cluster_id)
         valid_cluster_count = len(unique_clusters)
@@ -79,7 +83,7 @@ class AdaptiveResonanceTheory():
     def fit(self, X, y):
         """
         Fit the model using input matrix and corresponding labels.
-        Note, the input data matrix should have the shape of (n_samples, n_features).
+        Note, the input data matrix should have the shape of (sample_number, feature_number).
         """
 
         self.cluster_id = np.zeros(X.shape[0], dtype=np.int32)
@@ -117,7 +121,7 @@ class AdaptiveResonanceTheory():
         self.IsFitted = True
 
     def predict(self, X):
-        '''Return the model's predicted cluster for each of the given instances.'''
+        """Return the model's predicted cluster for each of the given instances."""
 
         if not self.IsFitted:
             raise ValueError(
@@ -146,8 +150,10 @@ class AdaptiveResonanceTheory():
         return cluster_labels[best_match_index]
 
     def predict_test(self, test_Y, pred_Y):
-        """This function prints the classification report and plots the confusion 
-        matrix for the given actual and predicted labels."""
+        """
+        This function prints the classification report and plots the confusion 
+        matrix for the given actual and predicted labels.
+        """
 
         # Print classification report
         print(classification_report(test_Y, pred_Y, zero_division=0))
