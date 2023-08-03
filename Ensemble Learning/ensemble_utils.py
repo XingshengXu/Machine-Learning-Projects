@@ -107,7 +107,7 @@ def create_regression_plot(model, X, y):
     plt.show()
 
 
-def interactive_data_collection_classification(model):
+def interactive_data_collection_classification(model_type):
     """
     Create an interactive plot for collecting data points for a Classification Task.
 
@@ -129,11 +129,14 @@ def interactive_data_collection_classification(model):
     knn = KNNClassifier()
 
     # Select the corresponding ensemble model
-    if model == 'voting':
+    if model_type == 'voting':
         model = VotingClassifier(
             classifiers=[slp, log_reg, knn], voting='hard')
-    elif model == 'stacking':
+    elif model_type == 'stacking':
         model = StackingClassifier(classifiers=[slp, knn])
+    elif model_type == 'bagging':
+        model = BaggingClassifier(
+            base_model=ClassificationTree(), model_type='classifier', model_number=10)
     else:
         print("Invalid model name. Please choose among 'voting', 'classification'.")
 
@@ -194,7 +197,7 @@ def interactive_data_collection_classification(model):
     plt.show()
 
 
-def interactive_data_collection_regression(model):
+def interactive_data_collection_regression(model_type):
     """
     Create an interactive plot for collecting data points for a Regression Task.
 
@@ -213,10 +216,13 @@ def interactive_data_collection_regression(model):
     lwlr = LocalWeightedLinearRegression(tau=0.5)
 
     # Select the corresponding ensemble model
-    if model == 'voting':
+    if model_type == 'voting':
         model = VotingRegressor(regressors=[tree, knn, lwlr])
-    elif model == 'stacking':
+    elif model_type == 'stacking':
         model = StackingRegressor(regressors=[lwlr, knn])
+    elif model_type == 'bagging':
+        model = BaggingRegressor(
+            base_model=RegressionTree(), model_type='regressor', model_number=10)
     else:
         print("Invalid model name. Please choose among 'voting', 'classification'.")
 
