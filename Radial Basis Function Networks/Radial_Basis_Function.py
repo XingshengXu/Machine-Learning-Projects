@@ -64,7 +64,6 @@ class RBFClassifier:
         std_devs = np.zeros(self.cluster_number)
 
         # Initiate cluster centers
-        np.random.seed(42)
         cluster_centers = X[:, np.random.choice(
             self.sample_number, self.cluster_number, replace=False)]
 
@@ -239,7 +238,6 @@ class RBFRegressor:
         std_devs = np.zeros(self.cluster_number)
 
         # Initiate cluster centers
-        np.random.seed(42)
         cluster_centers = X[:, np.random.choice(
             self.sample_number, self.cluster_number, replace=False)]
 
