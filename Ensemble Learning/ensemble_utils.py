@@ -1,3 +1,4 @@
+import math
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -87,6 +88,55 @@ def create_contour_plot(model, X, y, resolution=500, alpha=0.5):
     plt.show()
 
 
+def find_grid_dimensions(n):
+    """Find the number of rows and columns for a grid of n subplots."""
+
+    for i in range(int(n**0.5), 0, -1):
+        if n % i == 0:
+            return i, n // i
+    return 1, n
+
+
+def create_subplots_random_forest(model, X, y, resolution=200, alpha=0.5):
+    """
+    Create a grid of subplots, each displaying the decision boundaries for a different 
+    decision tree from a random forest classifier.
+    """
+
+    n = model.model_number
+    rows, cols = find_grid_dimensions(n)
+    fig, axes = plt.subplots(rows, cols, figsize=(5*cols, 5*rows))
+    axes = axes.flatten()
+
+    X_one_min, X_one_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+    X_two_min, X_two_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+    X1, X2 = np.meshgrid(np.linspace(X_one_min, X_one_max, resolution),
+                         np.linspace(X_two_min, X_two_max, resolution))
+
+    for i, ax in enumerate(axes[:n]):
+        X_plot = np.array([[x1, x2]
+                          for x1, x2 in zip(X1.flatten(), X2.flatten())])
+
+        # Use base model to predict
+        Y = model.base_models[i].predict_class(X_plot)
+        Y = Y.reshape(X1.shape)
+
+        cmap = plt.get_cmap('plasma', len(np.unique(y)))
+        norm = mpl.colors.Normalize(vmin=np.min(y), vmax=np.max(y))
+        contour = ax.contourf(X1, X2, Y, alpha=alpha, cmap=cmap, norm=norm)
+
+        for label in np.unique(y):
+            points = X[y == label]
+            color = cmap(norm(label))
+            ax.scatter(points[:, 0], points[:, 1], color=color,
+                       label=str(label), edgecolors='black')
+
+        ax.set_title(f'Sub-Model {i+1} Plot')
+
+    plt.tight_layout()
+    plt.show()
+
+
 def create_regression_plot(model, X, y):
     """Create a plot to visualize the ensemble model predictions."""
 
@@ -137,8 +187,11 @@ def interactive_data_collection_classification(model_type):
     elif model_type == 'bagging':
         model = BaggingClassifier(
             base_model=ClassificationTree(), model_type='classifier', model_number=10)
+    elif model_type == 'randomforest':
+        model = RandomForestClassifier()
     else:
-        print("Invalid model name. Please choose among 'voting', 'classification'.")
+        print("Invalid model name. Please choose among"
+              "\n'voting', 'stacking', 'bagging', and 'randomforest'.")
 
     # Create an interactive plot
     fig, ax = plt.subplots(figsize=(10, 7))
@@ -223,8 +276,11 @@ def interactive_data_collection_regression(model_type):
     elif model_type == 'bagging':
         model = BaggingRegressor(
             base_model=RegressionTree(), model_type='regressor', model_number=10)
+    elif model_type == 'randomforest':
+        model = RandomForestRegressor()
     else:
-        print("Invalid model name. Please choose among 'voting', 'classification'.")
+        print("Invalid model name. Please choose among"
+              "\n'voting', 'stacking', 'bagging', and 'randomforest'.")
 
     # Create an interactive plot
     fig, ax = plt.subplots(figsize=(10, 7))

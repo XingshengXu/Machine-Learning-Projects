@@ -1,15 +1,14 @@
 import numpy as np
 import path_setup
-from sklearn.base import clone
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
-from Decisiontree import RegressionTree
+from Decisiontree import ClassificationTree, RegressionTree
 from Logistic_Regression import LogisticRegression
 
 
 class VotingClassifier:
     """
-    A VotingClassifier is an ensemble model that aggregates the predictions of 
+    A Voting Classifier is an ensemble model that aggregates the predictions of 
     multiple base models and makes a final prediction based on either hard or 
     soft voting.
 
@@ -66,7 +65,7 @@ class VotingClassifier:
 
 class VotingRegressor:
     '''
-    A VotingRegressor is an ensemble model that aggregates the predictions of 
+    A Voting Regressor is an ensemble model that aggregates the predictions of 
     multiple base models and makes a final prediction. The final prediction is 
     equal to the mean predicted target value of all base models in the ensemble.
 
@@ -97,7 +96,7 @@ class VotingRegressor:
 
 class StackingClassifier:
     """
-    A StackingClassifier is an ensemble model in which the predictions of the
+    A Stacking Classifier is an ensemble model in which the predictions of the
     base classifiers are aggregated through the use of the Meta-Classifier.
 
     Args:
@@ -139,7 +138,7 @@ class StackingClassifier:
 
 class StackingRegressor:
     """
-    A StackingRegressor is an ensemble model in which the predictions of the 
+    A Stacking Regressor is an ensemble model in which the predictions of the 
     regressors are aggregated through the use of the Meta-Regressor.
 
     Args:
@@ -221,7 +220,7 @@ class Bagging:
             raise AttributeError(
                 "Invalid number of base models. 'model_number' argument not valid.")
 
-        if feature_proportion > 0 and feature_proportion <= 1:
+        if feature_proportion == 'sqrt' or (feature_proportion > 0 and feature_proportion <= 1):
             self.feature_proportion = feature_proportion
         else:
             raise AttributeError(
@@ -242,7 +241,11 @@ class Bagging:
     def __get_features(self, X):
         """Selects a random subset of features from the input data."""
 
-        feature_number = int(self.feature_proportion * X.shape[1])
+        if self.feature_proportion == 'sqrt':
+            feature_number = int(np.sqrt(X.shape[1]))
+        else:
+            feature_number = int(self.feature_proportion * X.shape[1])
+
         feature_idx = np.random.choice(
             X.shape[1], feature_number, replace=False)
 
@@ -310,8 +313,32 @@ class Bagging:
 
 
 class BaggingClassifier(Bagging):
+    """
+    A Bagging Classifier is an ensemble model that aggregates the predictions of
+    multiple base models in order to make a final prediction. The base models
+    are trained on random subsets (Bootstrapping) of the training data. The final 
+    prediction is calculated making use of hard voting of all of the base models 
+    in the ensemble model. 
+
+    Args:
+        base_model (object): The base model to be used in the ensemble.
+        model_type (str): The type of model - 'classifier' or 'regressor'.
+        model_number (int): The number of base models to be used in the ensemble.
+        feature_proportion (float): The fraction of the total number of features to be 
+                                     used to train each base model in the ensemble.
+
+    Attributes:
+        oob_score (float): The out-of-bag score of the ensemble. It is calculated as
+                           the average OOB score of all base models.
+        features (list): A list storing the indices of the features used to train each
+                         of the base models in the ensemble.
+        base_models (list): A list storing all of the trained base models in the ensemble.
+        X (np.array): The input data used to train the ensemble.
+        y (np.array): The target classes or values used to train the ensemble.
+    """
+
     def predict_class(self, X):
-        """Predict the class of the samples based on majority frequency for Ensemble Model."""
+        """Predict the class of the samples based on majority frequency for rnsemble model."""
 
         X = np.array(X)
 
@@ -334,8 +361,140 @@ class BaggingClassifier(Bagging):
 
 
 class BaggingRegressor(Bagging):
+    """
+    A Bagging Regressor is an ensemble model that aggregates the predictions of 
+    multiple base models and makes a final prediction. The base models are trained 
+    on random subsets (Bootstrapping) of the training data.The final prediction is 
+    equal to the mean predicted target value of all of the base models in the 
+    ensemble model. 
+
+    Args:
+        base_model (object): The base model to be used in the ensemble.
+        model_type (str): The type of model - 'classifier' or 'regressor'.
+        model_number (int): The number of base models to be used in the ensemble.
+        feature_proportion (float): The fraction of the total number of features to be 
+                                     used to train each base model in the ensemble.
+
+    Attributes:
+        oob_score (float): The out-of-bag score of the ensemble. It is calculated as
+                           the average OOB score of all base models.
+        features (list): A list storing the indices of the features used to train each
+                         of the base models in the ensemble.
+        base_models (list): A list storing all of the trained base models in the ensemble.
+        X (np.array): The input data used to train the ensemble.
+        y (np.array): The target classes or values used to train the ensemble.
+    """
+
     def predict_value(self, X):
-        """Predict the output value of the samples based on average value for Ensemble Model."""
+        """Predict the output value of the samples based on average value for ensemble model."""
+
+        X = np.array(X)
+
+        # If X is 1D, reshape it to 2D
+        if len(X.shape) == 1:
+            X = X.reshape(-1, 1)
+
+        # Get predictions from each model
+        preds = [np.reshape(model.predict_value(X[:, self.features[i]]), -1)
+                 for i, model in enumerate(self.base_models)]
+
+        # Compute and return the mean prediction
+        pred_y = np.mean(preds, axis=0)
+
+        return pred_y
+
+
+class RandomForestClassifier(Bagging):
+    """
+    A Random Forest Classifier is a type of ensemble model that utilizes multiple 
+    decision trees by constructing these multiple trees at the training phase and 
+    outputting the class that is the mode of the classes produced by individual tree 
+    at prediction. It introduces additional randomness of selecting features when 
+    growing trees to ensure diversity among the trees and mitigate overfitting. The 
+    final prediction is calculated making use of hard voting of all of the decision 
+    trees in the ensemble model. 
+
+    Args:
+        base_model (object): The base model to be used in the ensemble.
+        model_type (str): The type of model - 'classifier' or 'regressor'.
+        model_number (int): The number of base models to be used in the ensemble.
+        feature_proportion (float): The fraction of the total number of features to be 
+                                     used to train each base model in the ensemble.
+
+    Attributes:
+        oob_score (float): The out-of-bag score of the ensemble. It is calculated as
+                           the average OOB score of all base models.
+        features (list): A list storing the indices of the features used to train each
+                         of the base models in the ensemble.
+        base_models (list): A list storing all of the trained base models in the ensemble.
+        X (np.array): The input data used to train the ensemble.
+        y (np.array): The target classes or values used to train the ensemble.
+    """
+
+    def __init__(self, model_number=10, feature_proportion='sqrt'):
+        super().__init__(base_model=ClassificationTree(),
+                         model_type='classifier',
+                         model_number=model_number,
+                         feature_proportion=feature_proportion)
+
+    def predict_class(self, X):
+        """Predict the class of the samples based on majority frequency for ensemble model."""
+
+        X = np.array(X)
+
+        # If X is 1D, reshape it to 2D
+        if len(X.shape) == 1:
+            X = X.reshape(-1, 1)
+
+        # Get predictions from each model
+        preds = np.array([model.predict_class(X[:, self.features[i]])
+                         for i, model in enumerate(self.base_models)])
+
+        # Transpose so each row corresponds to a sample and each column to a base model's prediction
+        preds = np.transpose(preds).astype(int)
+
+        # Find mode for each sample
+        pred_y = np.apply_along_axis(
+            lambda x: np.bincount(x).argmax(), axis=1, arr=preds)
+
+        return pred_y
+
+
+class RandomForestRegressor(Bagging):
+    """
+    A Random Forest Regressor is a type of ensemble model that utilizes multiple 
+    decision trees by constructing these multiple trees at the training phase and 
+    outputting the class that is the mode of the classes produced by individual tree 
+    at prediction. It introduces additional randomness of selecting features when 
+    growing trees to ensure diversity among the trees and mitigate overfitting. The 
+    final prediction made by the ensemble is equal to the mean predicted target value 
+    of all of the decision trees in the ensemble model.
+
+    Args:
+        base_model (object): The base model to be used in the ensemble.
+        model_type (str): The type of model - 'classifier' or 'regressor'.
+        model_number (int): The number of base models to be used in the ensemble.
+        feature_proportion (float): The fraction of the total number of features to be 
+                                     used to train each base model in the ensemble.
+
+    Attributes:
+        oob_score (float): The out-of-bag score of the ensemble. It is calculated as
+                           the average OOB score of all base models.
+        features (list): A list storing the indices of the features used to train each
+                         of the base models in the ensemble.
+        base_models (list): A list storing all of the trained base models in the ensemble.
+        X (np.array): The input data used to train the ensemble.
+        y (np.array): The target classes or values used to train the ensemble.
+    """
+
+    def __init__(self, model_number=10, feature_proportion='sqrt'):
+        super().__init__(base_model=RegressionTree(),
+                         model_type='regressor',
+                         model_number=model_number,
+                         feature_proportion=feature_proportion)
+
+    def predict_value(self, X):
+        """Predict the output value of the samples based on average value for ensemble model."""
 
         X = np.array(X)
 
