@@ -83,7 +83,7 @@ class VotingRegressor:
             regressor.fit(X, y)
 
     def predict_value(self, X):
-        """Predict the output value of input data based on average value for ensemble model."""
+        """Predict the target value of input data based on average value for ensemble model."""
 
         # Reshape all predictions to 1D arrays
         preds = [np.reshape(regressor.predict_value(X), -1)
@@ -172,7 +172,7 @@ class StackingRegressor:
         self.final_regressor.fit(train_set, y_meta)
 
     def predict_value(self, X):
-        """Predict the output value of input data based on the meta-model."""
+        """Predict the target value of input data based on the meta-model."""
 
         base_set = np.column_stack([regressor.predict_value(X)
                                     for regressor in self.regressors])
@@ -386,7 +386,7 @@ class BaggingRegressor(Bagging):
     """
 
     def predict_value(self, X):
-        """Predict the output value of the samples based on average value for ensemble model."""
+        """Predict the target value of the samples based on average value for ensemble model."""
 
         X = np.array(X)
 
@@ -494,7 +494,7 @@ class RandomForestRegressor(Bagging):
                          feature_proportion=feature_proportion)
 
     def predict_value(self, X):
-        """Predict the output value of the samples based on average value for ensemble model."""
+        """Predict the target value of the samples based on average value for ensemble model."""
 
         X = np.array(X)
 
@@ -509,4 +509,58 @@ class RandomForestRegressor(Bagging):
         # Compute and return the mean prediction
         pred_y = np.mean(preds, axis=0)
 
+        return pred_y
+
+
+class GradientBoostingRegressor:
+    """
+    A GradientBoostingRegressor is an ensemble model that sequentially trains base models.
+    Each successive model is trained on the pseudo-residuals of the combined previous base models. 
+    This iterative correction of errors helps in reducing bias of the model predictions.
+
+    Args:
+        model_number (int): The number of base models (trees) to be used in the ensemble.
+        learning_rate (float): A factor to shrink the contribution of each base model.
+        max_depth (int): The maximum depth of each base model (regression tree).
+
+    Attributes:
+        max_depth (int): Maximum depth for the base regression trees.
+        models (list): List containing the base models (regression trees) and the initial prediction.
+    """
+
+    def __init__(self, model_number=100, learning_rate=0.1, max_depth=4):
+        self.model_number = model_number
+        self.learning_rate = learning_rate
+        self.max_depth = max_depth
+        self.models = []
+
+    def __calculate_residuals(self, X, y):
+        """Private function to calculate the pseudo-residuals based on current ensemble prediction."""
+
+        residuals = y - self.predict_value(X)
+        return residuals
+
+    def fit(self, X, y):
+        """Fit each of the base models in the ensemble model to the training set."""
+
+        # Starting prediction is the mean of target variable
+        initial_pred = np.mean(y)
+        self.models.append(initial_pred)
+
+        # Iteratively fit trees on residuals
+        for _ in range(self.model_number - 1):
+            residuals = self.__calculate_residuals(X, y)
+            tree = RegressionTree(max_depth=self.max_depth)
+            tree.fit(X, residuals)
+            self.models.append(tree)
+
+    def predict_value(self, X):
+        """Predict the target value for the given samples by contribution of the entire ensemble model."""
+
+        # Start with the initial prediction for all samples
+        pred_y = np.full(X.shape[0], self.models[0])
+
+        # Add contribution from each tree
+        for model in self.models[1:]:
+            pred_y += self.learning_rate * model.predict_value(X)
         return pred_y
