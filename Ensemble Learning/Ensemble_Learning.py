@@ -48,7 +48,7 @@ class VotingClassifier:
                 return np.argmax(avg_preds, axis=1)
             except AttributeError:
                 print(
-                    "The list of specified estimators does not support soft voting, set voting to 'hard' to resolve.")
+                    "The list of specified models does not support soft voting, set voting to 'hard' to resolve.")
         else:
             preds = np.array([classifier.predict_class(X)
                              for classifier in self.classifiers])
@@ -226,8 +226,8 @@ class Bagging:
             raise AttributeError(
                 "Invalid proportion of features. 'feature_proportion' argument not valid.")
 
-    def __get_estimator_params(self):
-        """Extract the attributes of the base estimator to be used in the ensemble model."""
+    def __get_model_params(self):
+        """Extract the attributes of the base model to be used in the ensemble model."""
 
         dic = self.base_model.__dict__
         args = self.base_model.__init__.__code__.co_varnames
@@ -270,8 +270,8 @@ class Bagging:
         if len(self.X.shape) == 1:
             self.X = self.X.reshape(-1, 1)
 
-        # Get the parameters to be passed to the estimator's constructor.
-        param_dict = self.__get_estimator_params()
+        # Get the parameters to be passed to the model's constructor.
+        param_dict = self.__get_model_params()
 
         for _ in range(self.model_number):
 
@@ -338,7 +338,7 @@ class BaggingClassifier(Bagging):
     """
 
     def predict_class(self, X):
-        """Predict the class of the samples based on majority frequency for rnsemble model."""
+        """Predict the class of the samples based on majority frequency for ensemble model."""
 
         X = np.array(X)
 
@@ -526,6 +526,8 @@ class GradientBoostingRegressor:
     Attributes:
         max_depth (int): Maximum depth for the base regression trees.
         models (list): List containing the base models (regression trees) and the initial prediction.
+        X (np.array): The input data used to train the ensemble.
+        y (np.array): The target classes or values used to train the ensemble.
     """
 
     def __init__(self, model_number=100, learning_rate=0.1, max_depth=4):
@@ -543,19 +545,33 @@ class GradientBoostingRegressor:
     def fit(self, X, y):
         """Fit each of the base models in the ensemble model to the training set."""
 
+        # Store the input data
+        self.X = np.array(X)
+        self.y = np.array(y)
+
+        # Check if X is 1D and if so, reshape it into a 2D array
+        if len(self.X.shape) == 1:
+            self.X = self.X.reshape(-1, 1)
+
         # Starting prediction is the mean of target variable
-        initial_pred = np.mean(y)
+        initial_pred = np.mean(self.y)
         self.models.append(initial_pred)
 
         # Iteratively fit trees on residuals
         for _ in range(self.model_number - 1):
-            residuals = self.__calculate_residuals(X, y)
+            residuals = self.__calculate_residuals(self.X, self.y)
             tree = RegressionTree(max_depth=self.max_depth)
-            tree.fit(X, residuals)
+            tree.fit(self.X, residuals)
             self.models.append(tree)
 
     def predict_value(self, X):
         """Predict the target value for the given samples by contribution of the entire ensemble model."""
+
+        X = np.array(X)
+
+        # If X is 1D, reshape it to 2D
+        if len(X.shape) == 1:
+            X = X.reshape(-1, 1)
 
         # Start with the initial prediction for all samples
         pred_y = np.full(X.shape[0], self.models[0])
@@ -563,4 +579,128 @@ class GradientBoostingRegressor:
         # Add contribution from each tree
         for model in self.models[1:]:
             pred_y += self.learning_rate * model.predict_value(X)
+        return pred_y
+
+
+class AdaBoostClassifier:
+    """
+    AdaBoostClassifier is an ensemble model that iteratively trains base models.
+    Each subsequent model is trained by taking into account the errors of the previous models. 
+    This iterative correction of errors makes the ensemble model more robust.
+
+    Args:
+        base_model (object): The base learner model used in boosting (a shallow classification tree).
+        model_number (int): The number of base models to be used in the ensemble.
+        learning_rate (float): A factor to shrink the contribution of each classifier.
+
+    Attributes:
+        models (list): List containing the trained base models.
+        influence (list): List containing the influence (or weight) of each model in predictions.
+    """
+
+    def __init__(self, base_model=ClassificationTree(max_depth=1), model_number=100, learning_rate=1):
+        self.base_model = base_model
+        self.model_number = model_number
+        self.learning_rate = learning_rate
+        self.models = []
+        self.influence = []
+
+    def __get_model_params(self):
+        """Extract the attributes of the base model to be used in the ensemble model."""
+
+        dic = self.base_model.__dict__
+        args = self.base_model.__init__.__code__.co_varnames
+        params = {}
+
+        for i in dic:
+            if i in args:
+                params[i] = dic[i]
+        return params
+
+    def __get_say(self, incorrect, total_samples):
+        """Calculate the influence (or say) of the model based on its error."""
+
+        error = incorrect / total_samples
+        error = np.clip(error, 0.001, 0.999)
+
+        return self.learning_rate * (np.log((1-error)/error))
+
+    def __mod_weights(self, X, outcomes, say):
+        """Modify sample weights based on model predictions."""
+
+        for i in range(X.shape[0]):
+            if outcomes[i]:
+                X[i, -1] *= np.exp(-say)
+            else:
+                X[i, -1] *= np.exp(say)
+        X[:, -1] /= X[:, -1].sum()
+        return X
+
+    def __order_weights(self, X):
+        """Order sample weights cumulatively."""
+
+        summation = 0
+        for i, x in enumerate(X[:, -1]):
+            summation += x
+            X[i, -1] = summation
+        return X
+
+    def __mod_datasets(self, X, y):
+        """Resample the dataset based on weights."""
+
+        temp_X, temp_y = np.zeros(X.shape), np.zeros(y.shape)
+        X = self.__order_weights(X)
+
+        for i in range(X.shape[0]):
+            idx = np.searchsorted(X[:, -1], np.random.rand())
+            temp_X[i], temp_y[i] = X[idx], y[idx]
+
+        temp_X[:, -1] = 1 / temp_X.shape[0]
+        return temp_X, temp_y
+
+    def fit(self, X, y):
+        """Fit each of the base models in the ensemble model to the training set."""
+
+        # Append sample weights as last column.
+        X = np.c_[X, np.full((X.shape[0], 1), (1/X.shape[0]))]
+        y = np.array(y)
+
+        # Check if X is 1D and if so, reshape it into a 2D array
+        if len(X.shape) == 1:
+            X = X.reshape(-1, 1)
+
+        params = self.__get_model_params()
+
+        for _ in range(self.model_number):
+            model = self.base_model.__class__(**params)
+            model.fit(X[:, :-1], y)
+            preds = model.predict_class(X[:, :-1])
+            incorrect = np.sum(preds != y)
+            say = self.__get_say(incorrect, len(y))
+            X = self.__mod_weights(X, preds == y, say)
+            X, y = self.__mod_datasets(X, y)
+            self.models.append(model)
+            self.influence.append(say)
+
+    def predict_class(self, X):
+        """Predict the class of the samples."""
+
+        # If X is 1D, reshape it to 2D
+        X = np.array(X)
+        if len(X.shape) == 1:
+            X = X.reshape(-1, 1)
+
+        # Initialize an array to hold the aggregated weighted predictions for each sample
+        aggregated_preds = np.zeros(X.shape[0])
+
+        for model, say in zip(self.models, self.influence):
+            pred = model.predict_class(X)
+
+            # Aggregate the predictions, weighted by the model's influence
+            aggregated_preds += pred * say
+
+        # Convert aggregated predictions to binary class predictions
+        # Assuming outputs are between 0 and 1.
+        pred_y = (aggregated_preds >= 0.5).astype(int)
+
         return pred_y

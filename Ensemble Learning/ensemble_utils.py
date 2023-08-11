@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import path_setup
+from matplotlib.animation import FuncAnimation, PillowWriter
 from matplotlib.widgets import Button
 from sklearn.metrics import classification_report, confusion_matrix, r2_score
 from Decisiontree import ClassificationTree, RegressionTree
@@ -157,6 +158,53 @@ def create_regression_plot(model, X, y):
     plt.show()
 
 
+def create_regression_animation(model, X, y):
+
+    X = np.array(X)
+
+    # If X is 1D, reshape it to 2D
+    if len(X.shape) == 1:
+        X = X.reshape(-1, 1)
+
+    fig, ax = plt.subplots(figsize=(10, 7))
+    ax.scatter(X, y, s=20, c='black', marker='x', label='Target')
+    line, = ax.plot([], [], c='red', label='Regression')
+
+    def init():
+        line.set_data([], [])
+        return line,
+
+    def update(frame):
+        if frame == 0:
+            pred = np.full(X.shape[0], model.models[0])
+        else:
+            # Start with the initial prediction
+            pred = np.full(X.shape[0], model.models[0])
+
+            # Sum up the predictions of each tree model up to the current frame
+            for tree in model.models[1:frame+1]:
+                # Check if the object is an instance of RegressionTree
+                if isinstance(tree, RegressionTree):
+                    pred += model.learning_rate * tree.predict_value(X)
+
+        sorted_X, sorted_pred = zip(*sorted(zip(X, pred)))
+        line.set_data(sorted_X, sorted_pred)
+        ax.set_title(f'Gradient Boosting Regression')
+        return line,
+
+    ani = FuncAnimation(fig, update, frames=range(
+        len(model.models) + 1), init_func=init, blit=True, repeat=False)
+    plt.legend()
+    plt.xlabel('Feature one')
+    plt.ylabel('Feature two')
+
+    # Save the animation as a GIF
+    writer = PillowWriter(fps=10)
+    ani.save("regression_animation.gif", writer=writer)
+
+    plt.show()
+
+
 def interactive_data_collection_classification(model_type):
     """
     Create an interactive plot for collecting data points for a Classification Task.
@@ -278,6 +326,8 @@ def interactive_data_collection_regression(model_type):
             base_model=RegressionTree(), model_type='regressor', model_number=10)
     elif model_type == 'randomforest':
         model = RandomForestRegressor()
+    elif model_type == 'gradientboosting':
+        model = GradientBoostingRegressor(model_number=50)
     else:
         print("Invalid model name. Please choose among"
               "\n'voting', 'stacking', 'bagging', and 'randomforest'.")
