@@ -598,7 +598,7 @@ class AdaBoostClassifier:
         influence (list): List containing the influence (or weight) of each model in predictions.
     """
 
-    def __init__(self, base_model=ClassificationTree(max_depth=1), model_number=100, learning_rate=1):
+    def __init__(self, base_model=ClassificationTree(max_depth=1), model_number=10, learning_rate=0.1):
         self.base_model = base_model
         self.model_number = model_number
         self.learning_rate = learning_rate
@@ -633,7 +633,7 @@ class AdaBoostClassifier:
                 X[i, -1] *= np.exp(-say)
             else:
                 X[i, -1] *= np.exp(say)
-        X[:, -1] /= X[:, -1].sum()
+        X[:, -1] /= np.sum(X[:, -1])
         return X
 
     def __order_weights(self, X):

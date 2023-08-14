@@ -89,6 +89,66 @@ def create_contour_plot(model, X, y, resolution=500, alpha=0.5):
     plt.show()
 
 
+def create_classification_animation(model, X, y, resolution=200, alpha=0.5):
+
+    # Define the axis boundaries of the plot and create a meshgrid
+    X_one_min, X_one_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+    X_two_min, X_two_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+
+    X1, X2 = np.meshgrid(np.linspace(X_one_min, X_one_max, resolution),
+                         np.linspace(X_two_min, X_two_max, resolution))
+
+    # Create the plotting figure
+    fig, ax = plt.subplots(figsize=(10, 7))
+
+    # Define colormap
+    cmap = plt.get_cmap('plasma', len(np.unique(y)))
+
+    # Normalize data into [0.0, 1.0] range
+    norm = mpl.colors.Normalize(vmin=np.min(y), vmax=np.max(y))
+
+    def plot_decision_boundary(model_idx):
+        # To start, consider only models up to the given index
+        models_sublist = model.models[:model_idx+1]
+        influence_sublist = model.influence[:model_idx+1]
+
+        Z = np.zeros(X1.ravel().shape[0])
+
+        # Calculate prediction for every point in the meshgrid
+        for m, inf in zip(models_sublist, influence_sublist):
+            Z += m.predict_class(np.c_[X1.ravel(), X2.ravel()]) * inf
+
+        Z = (Z >= 0.5).reshape(X1.shape)
+
+        ax.contourf(X1, X2, Z, alpha=alpha, cmap=cmap, norm=norm)
+        for label in np.unique(y):
+            points = X[y == label]
+            color = cmap(norm(label))
+            ax.scatter(points[:, 0], points[:, 1], color=color,
+                       label=str(label), edgecolors='black')
+        ax.set_title(
+            f'Decision Boundary Evolution at AdaBoost Iteration {model_idx + 1}')
+
+    def init():
+        ax.clear()
+
+    def update(frame):
+        ax.clear()
+        plot_decision_boundary(frame)
+
+    ani = FuncAnimation(fig, update, frames=range(
+        len(model.models)), init_func=init, repeat=False)
+    plt.xlabel('Feature one')
+    plt.ylabel('Feature two')
+    plt.legend(title="Class Labels")
+
+    # Save the animation as a GIF
+    writer = PillowWriter(fps=10)
+    ani.save("classification_animation.gif", writer=writer)
+
+    plt.show()
+
+
 def find_grid_dimensions(n):
     """Find the number of rows and columns for a grid of n subplots."""
 
@@ -189,7 +249,8 @@ def create_regression_animation(model, X, y):
 
         sorted_X, sorted_pred = zip(*sorted(zip(X, pred)))
         line.set_data(sorted_X, sorted_pred)
-        ax.set_title(f'Gradient Boosting Regression')
+        ax.set_title(
+            f'Ensemble Regression Evolution at Gradient Boosting Iteration {frame + 1}')
         return line,
 
     ani = FuncAnimation(fig, update, frames=range(
@@ -237,6 +298,8 @@ def interactive_data_collection_classification(model_type):
             base_model=ClassificationTree(), model_type='classifier', model_number=10)
     elif model_type == 'randomforest':
         model = RandomForestClassifier()
+    elif model_type == 'adaboost':
+        model = AdaBoostClassifier()
     else:
         print("Invalid model name. Please choose among"
               "\n'voting', 'stacking', 'bagging', and 'randomforest'.")
