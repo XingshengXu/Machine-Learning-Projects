@@ -72,7 +72,11 @@ class PrincipalComponentAnalysis:
                                     retained after dimensionality reduction. 
 
     Attributes:
+        variance_threshold (float): The desired percentage of total variance to be 
+                                    retained after dimensionality reduction.
         components (numpy.ndarray): Principal components derived from the data.
+        explained_variance (numpy.ndarray): Explained variance for each principal component.
+        component_number (int): The number of components needed to retain the desired variance.
     """
 
     def __init__(self, variance_threshold=0.95):
