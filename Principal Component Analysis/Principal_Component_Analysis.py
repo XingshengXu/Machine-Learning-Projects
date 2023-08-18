@@ -40,14 +40,44 @@ def create_pca_animation(X, y, pca):
     plt.show()
 
 
-def plot_transformed_data(X, y):
+def plot_3d_data(X, y=None, t=None, rotate=False):
+    """Plot the orignal 3D input data."""
+
+    fig = plt.figure(figsize=(10, 7))
+    ax = fig.add_subplot(111, projection='3d')
+
+    if y is None and t is not None:
+        ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=t, cmap=plt.cm.rainbow)
+    else:
+        scatter = ax.scatter(X[:, 0], X[:, 1], X[:, 2],
+                             c=y, cmap='coolwarm', s=50, edgecolors='k')
+        # Create a legend based on the colors (useful if y represents clusters or classes)
+        legend1 = ax.legend(*scatter.legend_elements(), title="Classes")
+        ax.add_artist(legend1)
+
+    ax.set_xlabel('Dimension 1')
+    ax.set_ylabel('Dimension 2')
+    ax.set_zlabel('Dimension 3')
+    ax.set_title('3D Original Input Data Plot')
+
+    if rotate:
+        # Rotate 90 degrees along the x-axis
+        ax.view_init(elev=90, azim=0)
+
+    plt.show()
+
+
+def plot_transformed_data(X, y, t=None):
     """Plot the 2D data after PCA transformation."""
 
     # Set up the figure
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10, 7))
 
-    # Scatter plot of data points
-    ax.scatter(X[:, 0], X[:, 1], c=y, cmap='coolwarm', edgecolors='k', s=50)
+    if y is None and t is not None:
+        ax.scatter(X[:, 0], X[:, 1], c=t, cmap=plt.cm.rainbow)
+    else:
+        ax.scatter(X[:, 0], X[:, 1], c=y,
+                   cmap='coolwarm', edgecolors='k', s=50)
 
     ax.set_xlabel('Principal Component 1')
     ax.set_ylabel('Principal Component 2')
