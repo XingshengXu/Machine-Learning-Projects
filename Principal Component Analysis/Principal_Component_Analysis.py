@@ -101,6 +101,7 @@ class PrincipalComponentAnalysis:
 
         # Use Singular Value Decomposition to calculate the principal components of the data.
         U, sigma, V = np.linalg.svd(covariance_matrix)
+
         self.components = V
 
         # Compute the explained variance for each component
@@ -117,4 +118,5 @@ class PrincipalComponentAnalysis:
         transform_matrix = V.T[:, :self.component_number]
 
         # Project the data onto the selected principal components.
-        return X @ transform_matrix
+        pca_projection = X @ transform_matrix
+        return pca_projection

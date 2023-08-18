@@ -30,7 +30,8 @@ class KNN:
         self.neighbour_idx = np.argpartition(dists, self.k_neighbours)[
             :self.k_neighbours]
         self.k_nearest_neighbours = self.X[self.neighbour_idx]
-        self.neighbour_values = self.y[self.neighbour_idx]
+        if self.y is not None:
+            self.neighbour_values = self.y[self.neighbour_idx]
 
     def fit(self, X, y):
         """
@@ -42,7 +43,7 @@ class KNN:
             self.X = np.array(X).reshape(-1, 1)
         else:
             self.X = np.array(X)
-        self.y = np.array(y)
+        self.y = np.array(y) if y is not None else None
 
         self.IsFitted = True
 
