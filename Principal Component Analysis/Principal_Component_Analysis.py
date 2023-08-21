@@ -61,8 +61,8 @@ def plot_3d_data(X, y=None, t=None, rotate=False):
     ax.set_title('3D Original Input Data Plot')
 
     if rotate:
-        # Rotate 90 degrees along the x-axis
-        ax.view_init(elev=90, azim=0)
+        # Rotate 90 degrees along the y-axis
+        ax.view_init(elev=0, azim=-90)
 
     plt.show()
 
