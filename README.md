@@ -81,7 +81,33 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 
 ### 3. Neural Perceptron
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/cc3eedd9-3102-4ef1-9eef-d200c7379341" width="400">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/9f0fc0ea-1d16-4f1e-9dd2-b55b75bb42ae" width="400">
   <br>
-  <em>Confusion Matrix of Hand Written Digits Recognition using 50 Hidden Layer MLP</em>
-</p>
+  <em>Decision Boundaries Visualized by Multi-Layer Perceptron on Synthetic Data</em>
+<p>
+
+### 4. Radial Basis Function Networks
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/dfdc7ba7-fdb4-4966-a7a1-1e4a31f35b1a" width="400">
+  <br>
+  <em>Decision Boundaries Visualized by RBF Networks on Synthetic Data</em>
+<p>
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/154b6f41-82c5-481d-8ee4-ce038862e91d" width="400">
+  <br>
+  <em>Implement Radial Basis Function Networks Regressor with different cluster numbers on nonlinear data</em>
+<p>
+
+### 5. Hopfield Neural Network
+### 6. Adaptive Resonance Theory
+### 7. Generative Learning Algorithms
+### 8. Support Vector Machine
+### 9. K-Nearest Neighbors
+### 10. Decision Tree
+### 11. Ensemble Learning
+### 12. Principal Component Analysis
+### 13. Locally Linear Embedding
+### 14. Maximum Variance Unfolding
+### 15. Independent Component Analysis
+
+
