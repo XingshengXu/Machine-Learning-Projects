@@ -7,3 +7,35 @@ The "Machine Learning Projects" repository is a collection of various projects t
 The repository is organized in a way that makes it easy for users to understand the code and the methodology used. Each project includes a main code file (.py) that contains the core algorithms for the model, written in an Object-Oriented Programming format. Additionally, a demo file (.ipynb) details the usage and results of running each model on different sets of data, and sometimes a utils file is included that contains utility functions used in the main code file. The code is well-commented and includes docstrings, making it easy to follow and suitable for individuals at all levels of experience, from beginners to advanced users.
 
 Whether you're a data scientist, machine learning engineer, or simply interested in the field, this repository is a valuable resource for anyone looking to expand their knowledge and build their portfolio. So, dive in and start exploring the world of machine learning!
+
+## Technical Requirements
+* **Programming Language**: Python 3.11 (compatible with future versions)
+* **Third-Party Libraries**: Minimal, mostly for data pre-processing and visualization. All the required libraries/packages are listed in the `requirements.txt` file.
+* **External Dependencies**: None, all datasets are included within the repository.
+* **Hardware Requirements**: CPU sufficient, as the models are lightweight and use small datasets for demonstration and educational purposes.
+
+## Installation and Setup Guide
+### Step 1: Clone the Repository
+Clone the repository from GitHub by running the following command:
+```bash
+git clone https://github.com/XingshengXu/Machine-Learing-Projects.git
+```
+### Step 2: Set Up Virtual Environment
+Navigate to the project folder and create a virtual environment using the following command:
+```bash
+python -m venv .venv
+```
+Activate the virtual environment (Optional but recommended):
+* On Windows:
+```bash
+.venv\Scripts\activate
+```
+* On macOS and Linux:
+```bash
+source .venv/bin/activate
+```
+### Step 3: Install Dependencies
+Navigate to the cloned repository and install the necessary packages using the "requirements.txt" file:
+```bash
+pip install -r requirements.txt
+```
