@@ -95,17 +95,17 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/154b6f41-82c5-481d-8ee4-ce038862e91d" width="600">
   <br>
-  <em>Implement Radial Basis Function Networks Regressor with different cluster numbers on nonlinear data</em>
+  <em>Implement Radial Basis Function Networks Regressor with Different Cluster Numbers on Nonlinear Data</em>
 <p>
 
 ### 5. Hopfield Neural Network
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/157f2268-abc7-4537-9a8f-85eb7152e0d3" width="600">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/157f2268-abc7-4537-9a8f-85eb7152e0d3" width="500">
   <br>
   <em>Image Noise Reduction using Hopfield Neural Network (digit 0)</em>
 <p>
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/fb631b43-354b-4cb2-9f37-ce0fab639f55" width="600">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/fb631b43-354b-4cb2-9f37-ce0fab639f55" width="500">
   <br>
   <em>Image Noise Reduction using Hopfield Neural Network (digit 1)</em>
 <p>
