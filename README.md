@@ -61,14 +61,12 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 
 ## All Machine Learning Project Demos
 ### 1. Linear Regression
-<p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/afe82484-84d8-4895-b68f-e41fc6d7bc7d.gif" width="400">
-  <br>
-  <em>Linear Regression (BGD) of Synthetic Data Set</em>
-</p>
+<img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/afe82484-84d8-4895-b68f-e41fc6d7bc7d.gif" width="400">
+<em>Linear Regression (BGD) of Synthetic Data Set</em>
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/1878e323-c58b-4821-8c34-bbe0d8ac7c05.gif" width="400">
   <br>
   <em>Linear Regression (SGD) of Synthetic Data Set</em>
 </p>
-
+### 2. Logistic Regression
+![Training Data with Decision Boundary of Non-Linearly Separable Synthetic Data (BGD)](https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/89f7513b-7693-48db-9b00-eb3e30822893)
