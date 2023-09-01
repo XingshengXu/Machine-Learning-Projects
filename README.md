@@ -61,17 +61,15 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 
 ## All Machine Learning Project Demos
 ### 1. Linear Regression
-<div style="display: flex; justify-content: center;">
-  <div style="margin: 10px;">
+<div style="display: flex; justify-content: center; align-items: center;">
+  <div style="margin: 10px; flex: 1;">
     <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/afe82484-84d8-4895-b68f-e41fc6d7bc7d.gif" width="300">
     <br>
-    <em>Linear Regression (BGD) of Synthetic Data Set</em>
+    <em style="text-align: center;">Linear Regression (BGD) of Synthetic Data Set</em>
   </div>
-  
-  <div style="margin: 10px;">
+  <div style="margin: 10px; flex: 1;">
     <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/8f5381d4-4f2f-4de8-b2a7-2b997beea675.gif" width="300">
     <br>
-    <em>Linear Regression (SGD) of Synthetic Data Set</em>
+    <em style="text-align: center;">Linear Regression (SGD) of Synthetic Data Set</em>
   </div>
 </div>
-
