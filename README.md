@@ -67,7 +67,8 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
   <em>Linear Regression (BGD) of Synthetic Data Set</em>
 </p>
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/fe92dc1b-ffdd-4b8b-8fce-fa9863954da9.gif" width="400">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/1878e323-c58b-4821-8c34-bbe0d8ac7c05.gif" width="400">
   <br>
-  <em>Local Weighted Linear Regression of Sine</em>
+  <em>Linear Regression (SGD) of Synthetic Data Set</em>
 </p>
+
