@@ -79,4 +79,9 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
   <em>Training Data with Decision Boundary of Non-Linearly Separable Synthetic Data (BGD)</em>
 </p>
 
-
+### 3. Neural Perceptron
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/cc3eedd9-3102-4ef1-9eef-d200c7379341" width="400">
+  <br>
+  <em>Confusion Matrix of Hand Written Digits Recognition using 50 Hidden Layer MLP</em>
+</p>
