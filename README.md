@@ -71,6 +71,7 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
   <br>
   <em>Linear Regression (SGD) of Synthetic Data Set</em>
 </p>
+
 ### 2. Logistic Regression
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/89f7513b-7693-48db-9b00-eb3e30822893" width="400">
