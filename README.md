@@ -35,7 +35,16 @@ Activate the virtual environment (Optional but recommended):
 source .venv/bin/activate
 ```
 ### Step 3: Install Dependencies
-Navigate to the cloned repository and install the necessary packages using the "requirements.txt" file:
+Navigate to the cloned repository and install the necessary packages using the `requirements.txt` file:
 ```bash
 pip install -r requirements.txt
 ```
+
+## Running the Code
+Each project within this repository has its own dedicated folder, which generally includes:
+
+* **model_name.py**: Core algorithms written in an object-oriented format.
+* **model_demo.ipynb**: Demo codes to help you get started and see the model in action.
+* **utils.py**: Helper functions.
+* **plots**: A folder containing plots and animations.
+To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook. This will provide an interactive way to understand the model and its outputs.
