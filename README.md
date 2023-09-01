@@ -62,43 +62,54 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 ## All Machine Learning Project Demos
 ### 1. Linear Regression
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/afe82484-84d8-4895-b68f-e41fc6d7bc7d.gif" width="400">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/afe82484-84d8-4895-b68f-e41fc6d7bc7d.gif" width="600">
   <br>
   <em>Linear Regression (BGD) of Synthetic Data Set</em>
 </p>
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/1878e323-c58b-4821-8c34-bbe0d8ac7c05.gif" width="400">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/1878e323-c58b-4821-8c34-bbe0d8ac7c05.gif" width="600">
   <br>
   <em>Linear Regression (SGD) of Synthetic Data Set</em>
 </p>
 
 ### 2. Logistic Regression
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/89f7513b-7693-48db-9b00-eb3e30822893" width="400">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/89f7513b-7693-48db-9b00-eb3e30822893" width="600">
   <br>
   <em>Training Data with Decision Boundary of Non-Linearly Separable Synthetic Data (BGD)</em>
 </p>
 
 ### 3. Neural Perceptron
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/9f0fc0ea-1d16-4f1e-9dd2-b55b75bb42ae" width="400">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/9f0fc0ea-1d16-4f1e-9dd2-b55b75bb42ae" width="600">
   <br>
   <em>Decision Boundaries Visualized by Multi-Layer Perceptron on Synthetic Data</em>
 <p>
 
 ### 4. Radial Basis Function Networks
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/dfdc7ba7-fdb4-4966-a7a1-1e4a31f35b1a" width="400">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/dfdc7ba7-fdb4-4966-a7a1-1e4a31f35b1a" width="600">
   <br>
   <em>Decision Boundaries Visualized by RBF Networks on Synthetic Data</em>
 <p>
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/154b6f41-82c5-481d-8ee4-ce038862e91d" width="400">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/154b6f41-82c5-481d-8ee4-ce038862e91d" width="600">
   <br>
   <em>Implement Radial Basis Function Networks Regressor with different cluster numbers on nonlinear data</em>
 <p>
 
 ### 5. Hopfield Neural Network
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/157f2268-abc7-4537-9a8f-85eb7152e0d3" width="600">
+  <br>
+  <em>Image Noise Reduction using Hopfield Neural Network (digit 0)</em>
+<p>
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/fb631b43-354b-4cb2-9f37-ce0fab639f55" width="600">
+  <br>
+  <em>Image Noise Reduction using Hopfield Neural Network (digit 1)</em>
+<p>
+
 ### 6. Adaptive Resonance Theory
 ### 7. Generative Learning Algorithms
 ### 8. Support Vector Machine
