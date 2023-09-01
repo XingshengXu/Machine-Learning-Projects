@@ -1,6 +1,16 @@
 # Machine-Learing-Projects
 ![Machine-Learing-Projects](https://socialify.git.ci/XingshengXu/Machine-Learing-Projects/image?description=1&descriptionEditable=A%20collection%20of%20various%20projects%20showcase%20the%20application%20of%20machine%20learning%20algorithms%20and%20techniques%20to%20real-world%20problems.&font=Inter&logo=https%3A%2F%2Fcyberhongtu.files.wordpress.com%2F2023%2F03%2Fcyberhongtu-logo-4.png%3Fresize%3D668%252C668&name=1&pattern=Circuit%20Board&theme=Auto)
 
+## Table of Contents
+- [Introduction](#introduction)
+- [Technical Requirements](#technical-requirements)
+- [Installation and Setup Guide](#installation-and-setup-guide)
+  - [Step 1: Clone the Repository](#step-1-clone-the-repository)
+  - [Step 2: Set Up Virtual Environment](#step-2-set-up-virtual-environment)
+  - [Step 3: Install Dependencies](#step-3-install-dependencies)
+- [Running the Code](#running-the-code)
+- [All Machine Learning Project Demos](#all-machine-learning-project-demos)
+
 ## Introduction
 The "Machine Learning Projects" repository is a collection of various projects that showcase the machine learning algorithms behind each model and the application of these models to real-world problems. Each project in the repository is designed to provide a hands-on experience for individuals looking to explore the field of machine learning. The projects cover a wide range of models, from simple regression analysis to complex deep learning networks, providing a comprehensive overview of the field.
 
@@ -48,3 +58,5 @@ Each project within this repository has its own dedicated folder, which generall
 * **utils.py**: Helper functions.
 * **plots**: A folder containing plots and animations.
 To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook. This will provide an interactive way to understand the model and its outputs.
+
+## All Machine Learning Project Demos
