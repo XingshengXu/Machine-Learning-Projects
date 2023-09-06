@@ -212,6 +212,12 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p>
 
 ### 14. Maximum Variance Unfolding
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/85a10800-ebcc-408e-bb03-a3d22dec7a3c" width="1000">
+  <br>
+  <em>Maximum Variance Unfolding on a. swiss roll data b. arrow shape data c. helix shape data d. twin peaks data</em>
+<p>
+
 ### 15. Independent Component Analysis
 
 
