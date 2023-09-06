@@ -10,6 +10,21 @@
   - [Step 3: Install Dependencies](#step-3-install-dependencies)
 - [Running the Code](#running-the-code)
 - [All Machine Learning Project Demos](#all-machine-learning-project-demos)
+  - [Linear Regression](#1-linear-regression)
+  - [Logistic Regression](#2-logistic-regression)
+  - [Neural Perceptron](#3-neural-perceptron)
+  - [Radial Basis Function Networks](#4-radial-basis-function-networks)
+  - [Hopfield Neural Network](#5-hopfield-neural-network)
+  - [Adaptive Resonance Theory](#6-adaptive-resonance-theory)
+  - [Generative Learning Algorithms](#7-generative-learning-algorithms)
+  - [Support Vector Machine](#8-support-vector-machine)
+  - [K-Nearest Neighbors](#9-k-nearest-neighbors)
+  - [Decision Tree](#10-decision-tree)
+  - [Ensemble Learning](#11-ensemble-learning)
+  - [Principal Component Analysis](#12-principal-component-analysis)
+  - [Locally Linear Embedding](#13-locally-linear-embedding)
+  - [Maximum Variance Unfolding](#14-maximum-variance-unfolding)
+  - [Independent Component Analysis](#15-independent-component-analysis)
 
 ## Introduction
 The "Machine Learning Projects" repository is a collection of various projects that showcase the machine learning algorithms behind each model and the application of these models to real-world problems. Each project in the repository is designed to provide a hands-on experience for individuals looking to explore the field of machine learning. The projects cover a wide range of models, from simple regression analysis to complex deep learning networks, providing a comprehensive overview of the field.
@@ -229,10 +244,6 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
   <br>
   <em>Independent Component Analysis Separating Mixture of Real Sound Signals</em>
 <p>
-  
-#### Original Signal 1
-[Click here to play Audio 1](https://github.com/XingshengXu/Machine-Learing-Projects/blob/main/Independent%20Component%20Analysis/sounds/1.wav)
-
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/d15d877b-f864-45e5-88de-b119342b3801" width="600">
   <br>
