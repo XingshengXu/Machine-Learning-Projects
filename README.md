@@ -102,12 +102,12 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/157f2268-abc7-4537-9a8f-85eb7152e0d3" width="400">
   <br>
-  <em>Image Noise Reduction using Hopfield Neural Network (digit 0)</em>
+  <em>Image Noise Reduction Using Hopfield Neural Network (digit 0)</em>
 <p>
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/fb631b43-354b-4cb2-9f37-ce0fab639f55" width="400">
   <br>
-  <em>Image Noise Reduction using Hopfield Neural Network (digit 1)</em>
+  <em>Image Noise Reduction Using Hopfield Neural Network (digit 1)</em>
 <p>
 
 ### 6. Adaptive Resonance Theory
@@ -138,7 +138,7 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/ac0fe6df-334e-4f7a-ade7-cda1f99046cc" width="1000">
   <br>
-  <em>The Margin and Decision Boundary of SVM with a. linear kernel b. polynomial kernel c. radial basis function kernel on non-linearly separable data along with prediction confidence</em>
+  <em>The Margin and Decision Boundary of SVM with a. linear kernel b. polynomial kernel c. radial basis function kernel on Non-linearly Separable Data Along with Prediction Confidence</em>
 <p>
 
 ### 9. K-Nearest Neighbors
@@ -150,10 +150,21 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/41525ff3-99f6-4bd6-bd52-303273ebe25d" width="600">
   <br>
-  <em>K-Nearest Neighbors with different numbers of neighbors (K) on nonlinear data</em>
+  <em>K-Nearest Neighbors with Different Numbers of Neighbors (K) on Nonlinear Data</em>
 <p>
 
 ### 10. Decision Tree
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/a11df0a7-8f8f-407f-92c1-fb33b763a1af" width="1000">
+  <br>
+  <em>Classification Tree Using a. gini impurity b. entropy on Non-linearly Separable Multi-Class Data</em>
+<p>
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/2a191b30-9363-47c5-92fc-74f561404609" width="600">
+  <br>
+  <em>Regression Tree Using MAE with Different Regulation Parameters on Nonlinear Data</em>
+<p>
+
 ### 11. Ensemble Learning
 ### 12. Principal Component Analysis
 ### 13. Locally Linear Embedding
