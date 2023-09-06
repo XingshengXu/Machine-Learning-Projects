@@ -132,7 +132,7 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
   <em>Decision Boundaries Visualized by Fuzzy Adaptive Resonance Theory Classifier on Non-linearly Separable Multi-Class Data</em>
 <p>
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/bd07ab4b-06ea-467a-b68d-a667fb5a8574" width="600">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/b0d74bc8-edeb-4944-86b9-e43a8c881b9d" width="600">
   <br>
   <em>Fuzzy Adaptive Resonance Theory Based Image Compression</em>
 <p>
