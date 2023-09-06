@@ -220,22 +220,22 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 
 ### 15. Independent Component Analysis
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/6ae943a4-6f3f-4ecf-ad3c-1052c74b0d9b" width="1000">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/6ae943a4-6f3f-4ecf-ad3c-1052c74b0d9b" width="800">
   <br>
   <em>Independent Component Analysis Separating A Combination of Sinusoidal Signal and Square Signal</em>
 <p>
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/7fc75e00-b2fb-4b21-a61e-701a3a9838fd" width="1000">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/7fc75e00-b2fb-4b21-a61e-701a3a9838fd" width="800">
   <br>
   <em>Independent Component Analysis Separating Mixture of Real Sound Signals</em>
 <p>
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/d15d877b-f864-45e5-88de-b119342b3801" width="1000">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/d15d877b-f864-45e5-88de-b119342b3801" width="800">
   <br>
   <em>Independent Component Analysis Separating A Dog Image</em>
 <p>
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/111542c9-94fd-409d-ae30-4cc4af629975" width="1000">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/111542c9-94fd-409d-ae30-4cc4af629975" width="800">
   <br>
   <em>Independent Component Analysis Separating A Girl Image</em>
 <p>
