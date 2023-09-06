@@ -131,7 +131,7 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 
 ### 8. Support Vector Machine
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/a68bf22a-2d90-4b0f-a272-bed4ecdfe7a5.gif" width="800">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/120bc106-4f5a-4761-af7b-bc5c227a2d8b.gif" width="1000">
   <br>
   <em>The Decision Boundary Hyperplane of A Linear Kernel SVM in 3D</em>
 <p>
