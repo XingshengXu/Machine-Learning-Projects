@@ -112,15 +112,15 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 
 ### 6. Adaptive Resonance Theory
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/2de6fe67-436e-4aa8-8973-167e3d443027" width="400">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/2de6fe67-436e-4aa8-8973-167e3d443027" width="600">
   <br>
   <em>Decision Boundaries Visualized by Fuzzy Adaptive Resonance Theory Classifier</em>
 <p>
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/bd07ab4b-06ea-467a-b68d-a667fb5a8574" width="400">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/bd07ab4b-06ea-467a-b68d-a667fb5a8574" width="600">
   <br>
+  <em>Fuzzy Adaptive Resonance Theory Based Image Compression/em>
 <p>
-
 
 ### 7. Generative Learning Algorithms
 ### 8. Support Vector Machine
