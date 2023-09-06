@@ -131,12 +131,12 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 
 ### 8. Support Vector Machine
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/a68bf22a-2d90-4b0f-a272-bed4ecdfe7a5" width="600">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/a68bf22a-2d90-4b0f-a272-bed4ecdfe7a5.gif" width="800">
   <br>
   <em>The Decision Boundary Hyperplane of A Linear Kernel SVM in 3D</em>
 <p>
 <p align="center">
-  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/ac0fe6df-334e-4f7a-ade7-cda1f99046cc" width="600">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/ac0fe6df-334e-4f7a-ade7-cda1f99046cc" width="1000">
   <br>
   <em>The Margin and Decision Boundary of SVM with a. linear kernel b. polynomial kernel c. radial basis function kernel on non-linearly separable data along with prediction confidence</em>
 <p>
