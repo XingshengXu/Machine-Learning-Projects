@@ -229,6 +229,10 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
   <br>
   <em>Independent Component Analysis Separating Mixture of Real Sound Signals</em>
 <p>
+  
+#### Original Signal 1
+[Click here to play Audio 1](https://github.com/XingshengXu/Machine-Learing-Projects/blob/main/Independent%20Component%20Analysis/sounds/1.wav)
+
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/d15d877b-f864-45e5-88de-b119342b3801" width="600">
   <br>
