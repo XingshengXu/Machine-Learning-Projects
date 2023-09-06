@@ -114,7 +114,7 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/2de6fe67-436e-4aa8-8973-167e3d443027" width="600">
   <br>
-  <em>Decision Boundaries Visualized by Fuzzy Adaptive Resonance Theory Classifier</em>
+  <em>Decision Boundaries Visualized by Fuzzy Adaptive Resonance Theory Classifier on Non-linearly Separable Multi-Class Data</em>
 <p>
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/bd07ab4b-06ea-467a-b68d-a667fb5a8574" width="600">
@@ -142,6 +142,17 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p>
 
 ### 9. K-Nearest Neighbors
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/e1d0a018-cb7c-499f-b931-d1a7d11e1fc4" width="600">
+  <br>
+  <em>KNN Classification on Non-linearly Separable Multi-Class Data</em>
+<p>
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/41525ff3-99f6-4bd6-bd52-303273ebe25d" width="600">
+  <br>
+  <em>K-Nearest Neighbors with different numbers of neighbors (K) on nonlinear data</em>
+<p>
+
 ### 10. Decision Tree
 ### 11. Ensemble Learning
 ### 12. Principal Component Analysis
