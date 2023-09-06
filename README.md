@@ -55,7 +55,7 @@ Each project within this repository has its own dedicated folder, which generall
 
 * **model_name.py**: Core algorithms written in an object-oriented format.
 * **model_demo.ipynb**: Demo codes to help you get started and see the model in action.
-* **utils.py**: Helper functions.
+* **utils.py**: Utility functions.
 * **plots**: A folder containing plots and animations.
 To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook. This will provide an interactive way to understand the model and its outputs.
 
@@ -111,6 +111,17 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p>
 
 ### 6. Adaptive Resonance Theory
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/2de6fe67-436e-4aa8-8973-167e3d443027" width="400">
+  <br>
+  <em>Decision Boundaries Visualized by Fuzzy Adaptive Resonance Theory Classifier</em>
+<p>
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/bd07ab4b-06ea-467a-b68d-a667fb5a8574" width="400">
+  <br>
+<p>
+
+
 ### 7. Generative Learning Algorithms
 ### 8. Support Vector Machine
 ### 9. K-Nearest Neighbors
