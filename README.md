@@ -205,6 +205,12 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p>
 
 ### 13. Locally Linear Embedding
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/d5316a2c-bfca-4fb9-b766-684873ecd21b" width="1000">
+  <br>
+  <em>Locally Linear Embedding on a. swiss roll data b. arrow shape data c. helix shape data d. twin peaks data</em>
+<p>
+
 ### 14. Maximum Variance Unfolding
 ### 15. Independent Component Analysis
 
