@@ -191,8 +191,19 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
   <br>
   <em>Gradient Boosting Regressor on Nonlinear Data</em>
 <p>
-
+  
 ### 12. Principal Component Analysis
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/a470a45d-0e6c-4d30-84e8-8860923c51e9.gif" width="800">
+  <br>
+  <em>Principal Component Analysis on Non-linearly Separable Two-Class Data in 3D</em>
+<p>
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/7976024f-80c7-4c0b-8dcf-dafede7039e1" width="1000">
+  <br>
+  <em>Principal Component Analysis on a. swiss roll data b. arrow shape data c. helix shape data d. twin peaks data</em>
+<p>
+
 ### 13. Locally Linear Embedding
 ### 14. Maximum Variance Unfolding
 ### 15. Independent Component Analysis
