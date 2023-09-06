@@ -171,6 +171,16 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
   <br>
   <em>Ensemble Learning Classifiers a. voting b. stacking c. bagging d. random forest on Non-linearly Separable Multi-Class Data</em>
 <p>
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/799368c0-881a-47a2-8a47-141e3a0b6408" width="1000">
+  <br>
+  <em>The Decision Boundaries for Each Sub-model Decision Tree from A Random Forest classifier</em>
+<p>
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/d24f92c1-acba-413c-a27f-20fdf10d4422" width="1000">
+  <br>
+  <em>Ensemble Learning Regressors a. voting b. stacking c. bagging d. random forest on Nonlinear Data</em>
+<p>
 
 ### 12. Principal Component Analysis
 ### 13. Locally Linear Embedding
