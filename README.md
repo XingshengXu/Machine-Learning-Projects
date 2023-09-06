@@ -166,6 +166,12 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p>
 
 ### 11. Ensemble Learning
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/20e906fe-ef56-4319-a0f3-41c9807fd50d" width="1000">
+  <br>
+  <em>Ensemble Learning Classifiers a. voting b. stacking c. bagging d. random forest on Non-linearly Separable Multi-Class Data</em>
+<p>
+
 ### 12. Principal Component Analysis
 ### 13. Locally Linear Embedding
 ### 14. Maximum Variance Unfolding
