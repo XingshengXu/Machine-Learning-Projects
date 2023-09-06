@@ -181,6 +181,16 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
   <br>
   <em>Ensemble Learning Regressors a. voting b. stacking c. bagging d. random forest on Nonlinear Data</em>
 <p>
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/e37baa24-5768-43e0-8a70-dbab9833a768.gif" width="800">
+  <br>
+  <em>AdaBoost Classifier on Non-linearly Separable Two-Class Data</em>
+<p>
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/8936281a-6acc-4c55-8605-7a795364a8c0.gif" width="800">
+  <br>
+  <em>Gradient Boosting Regressor on Nonlinear Data</em>
+<p>
 
 ### 12. Principal Component Analysis
 ### 13. Locally Linear Embedding
