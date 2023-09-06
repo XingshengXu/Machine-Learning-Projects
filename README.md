@@ -119,10 +119,16 @@ To run a model, navigate to its folder and open the demo.ipynb Jupyter notebook.
 <p align="center">
   <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/bd07ab4b-06ea-467a-b68d-a667fb5a8574" width="600">
   <br>
-  <em>Fuzzy Adaptive Resonance Theory Based Image Compression/em>
+  <em>Fuzzy Adaptive Resonance Theory Based Image Compression</em>
 <p>
 
 ### 7. Generative Learning Algorithms
+<p align="center">
+  <img src="https://github.com/XingshengXu/Machine-Learing-Projects/assets/125934684/35888f6f-2cf4-4382-9e3f-5481c03228c5" width="600">
+  <br>
+  <em>Gaussian Discriminant Analysis for Classification Marketing Target</em>
+<p>
+
 ### 8. Support Vector Machine
 ### 9. K-Nearest Neighbors
 ### 10. Decision Tree
