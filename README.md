@@ -1,4 +1,4 @@
-# Machine-Learing-Projects
+# Machine-Learning-Projects
 ![Machine-Learing-Projects](https://socialify.git.ci/XingshengXu/Machine-Learing-Projects/image?description=1&descriptionEditable=A%20collection%20of%20various%20projects%20showcase%20the%20application%20of%20machine%20learning%20algorithms%20and%20techniques%20to%20real-world%20problems.&font=Inter&logo=https%3A%2F%2Fcyberhongtu.files.wordpress.com%2F2023%2F03%2Fcyberhongtu-logo-4.png%3Fresize%3D668%252C668&name=1&pattern=Circuit%20Board&theme=Auto)
 
 ## Table of Contents
