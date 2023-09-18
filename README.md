@@ -1,5 +1,5 @@
 # Machine-Learning-Projects
-![Machine-Learning-Projects](https://socialify.git.ci/XingshengXu/Machine-Learning-Projects/image?font=Rokkitt&logo=https%3A%2F%2Fcyberhongtu.files.wordpress.com%2F2023%2F03%2Fcyberhongtu-logo-4.png%3Fresize%3D668%252C668&name=1&pattern=Circuit%20Board&theme=Dark)
+![Machine-Learning-Projects](https://socialify.git.ci/XingshengXu/Machine-Learning-Projects/image?description=1&font=Rokkitt&logo=https%3A%2F%2Fcyberhongtu.files.wordpress.com%2F2023%2F03%2Fcyberhongtu-logo-4.png%3Fresize%3D668%252C668&name=1&pattern=Circuit%20Board&theme=Dark)
 
 ## Table of Contents
 - [Introduction](#introduction)
